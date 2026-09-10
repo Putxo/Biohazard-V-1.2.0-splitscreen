@@ -1,4 +1,5 @@
 #include "re5/split_localcoop_120.hpp"
+#include <cstddef>
 #include <cstdint>
 
 namespace re5::split120 {
@@ -26,15 +27,13 @@ static inline int div4_trunc(int v)  { return v / 4; }
 } // namespace
 
 // 0x00A23A00
-// thiscall; stack argument: itemIndex; returns with RET 4.
-// Reconstructed directly from the 1.2.0 instruction stream.
+// thiscall; stack argument: itemIndex; original returns with RET 4.
 void SplitDrawPrimary_A23A00(void* self, int itemIndex)
 {
     int width;
     if (QueryGameStatus_C42D90() == 1) {
         width = static_cast<int>(GetSplitState_123457C()->splitScale * 30.0f);
     } else {
-        // Exact branch: 0x1C when self+0x20 != 0, 0x1E when it is zero.
         width = field<std::int32_t>(self, 0x20) == 0 ? 0x1E : 0x1C;
     }
 
@@ -42,21 +41,19 @@ void SplitDrawPrimary_A23A00(void* self, int itemIndex)
     int localValue = -1;
 
     int x;
-    if (uiId == 0x952 || uiId == 0x974) {
+    if (uiId == 0x952 || uiId == 0x974)
         x = div4_trunc(field<std::int32_t>(self, 0x24) * 3);
-    } else {
+    else
         x = div10_trunc(field<std::int32_t>(self, 0x24) * 9);
-    }
 
     int y = div8_trunc(field<std::int32_t>(self, 0x28) * 7);
 
     if (QueryGameStatus_C42D90() == 1) {
         auto* split = GetSplitState_123457C();
-        if (split->fullScreenSplitMode != 0 && split->transientSplitFlag == 0) {
+        if (split->fullScreenSplitMode != 0 && split->transientSplitFlag == 0)
             x = FullCoordTransform_76A460(x);
-        } else {
+        else
             x = static_cast<int>(static_cast<float>(x) + split->splitOffset);
-        }
 
         int halfWidth = (width - (width >> 31)) >> 1;
         y = PanelTransform_76C2A0(y + halfWidth);
