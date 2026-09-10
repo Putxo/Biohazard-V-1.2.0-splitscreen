@@ -1,4 +1,5 @@
 #include "re5/split_localcoop_120.hpp"
+#include <cstddef>
 #include <cstdint>
 
 namespace re5::split120 {
@@ -36,9 +37,7 @@ static inline int truncf(float v) { return static_cast<int>(v); }
 } // namespace
 
 // 0x00A24850..0x00A24C70
-// Large 1.2.0 split-aware UI routine ("top22" in the historical audit).
-// This is a structured reconstruction from the original 0x421-byte body.
-// Unknown resource/string semantics remain deliberately named by address.
+// Structured reconstruction from the original 0x421-byte 1.2.0 body.
 void SplitTop22_A24850(void* self)
 {
     int baseIndex = UiIndex_A17800(self);
@@ -56,87 +55,65 @@ void SplitTop22_A24850(void* self)
                     UiTable_112C080(0), 0x530, 0x60);
 
     int xCursor = static_cast<std::int16_t>(topWord);
-    if (QueryGameStatus_C42D90() == 1) {
-        xCursor = truncf(GetSplitState_123457C()->splitScale * 54.0f
-                         + static_cast<float>(xCursor) + 30.0f);
-    } else {
+    if (QueryGameStatus_C42D90() == 1)
+        xCursor = truncf(GetSplitState_123457C()->splitScale * 54.0f +
+                         static_cast<float>(xCursor) + 30.0f);
+    else
         xCursor += 0x34;
-    }
 
     for (int i = 0; i < 1; ++i) {
         int localBaseIndex = baseIndex;
-        if (i != f<std::int32_t>(self, 0x48)) {
+        if (i != f<std::int32_t>(self, 0x48))
             localBaseIndex = (baseIndex * 0x56) / 100;
-        }
 
         const void* table = UiTable_112C080(i == f<std::int32_t>(self, 0x48) ? 0 : 1);
 
         if (i == 0) {
-            float scale = 1.0f;
-            if (QueryGameStatus_C42D90() == 1)
-                scale = GetSplitState_123457C()->splitScale;
-
+            float scale = QueryGameStatus_C42D90() == 1
+                            ? GetSplitState_123457C()->splitScale : 1.0f;
             std::uint16_t id = ReadWord_112BE50();
-            int x;
-            if (QueryGameStatus_C42D90() != 1) {
-                x = 0x17C;
-            } else {
-                x = 0x280 - truncf(GetSplitState_123457C()->splitScale2 * 260.0f);
-            }
-
+            int x = QueryGameStatus_C42D90() != 1
+                      ? 0x17C
+                      : 0x280 - truncf(GetSplitState_123457C()->splitScale2 * 260.0f);
             DrawMain_9E5E90(self, localBaseIndex, x, xCursor, table, id, 0x60);
 
-            if (QueryGameStatus_C42D90() != 1) {
-                x = 0x33E;
-            } else {
-                // Original constant is -190.0f.
-                x = 0x280 - truncf(GetSplitState_123457C()->splitScale2 * -190.0f);
-            }
+            x = QueryGameStatus_C42D90() != 1
+                  ? 0x33E
+                  : 0x280 - truncf(GetSplitState_123457C()->splitScale2 * -190.0f);
             DrawNamed_9E5330(self, Str_FA80D4(), x, xCursor, &scale, 1.0f);
 
             int ratio = (f<std::int32_t>(self, 0x190) * 0x137) /
                         f<std::int32_t>(self, 0x194);
             int pointX = ratio + 0x2A1;
-            if (QueryGameStatus_C42D90() == 1) {
-                pointX -= 0x280;
-                pointX = truncf(static_cast<float>(pointX) *
+            if (QueryGameStatus_C42D90() == 1)
+                pointX = truncf(static_cast<float>(pointX - 0x280) *
                                 GetSplitState_123457C()->splitScale2) + 0x280;
-            }
             DrawNamed_9E5330(self, Str_FA80CC(), pointX, xCursor + 0x11, &scale, 1.0f);
 
-            if (QueryGameStatus_C42D90() != 1) {
-                x = 0x33C;
-            } else {
-                // Original constant is -188.0f.
-                x = 0x280 - truncf(GetSplitState_123457C()->splitScale2 * -188.0f);
-            }
+            x = QueryGameStatus_C42D90() != 1
+                  ? 0x33C
+                  : 0x280 - truncf(GetSplitState_123457C()->splitScale2 * -188.0f);
             DrawNamed_9E5330(self, Str_10BAC14(), x, xCursor + 0x4E, &scale, 1.0f);
         }
 
         if (i == f<std::int32_t>(self, 0x48)) {
             int current = f<std::int32_t>(self, 0x190 + i * 4);
-            int limit   = f<std::int32_t>(self, 0x194 + i * 4);
+            int limit = f<std::int32_t>(self, 0x194 + i * 4);
             char text[64]{};
 
             if (current > 0) {
                 Format_E63B3E(text, Fmt_FA6C20(), UiArray_112C144(i));
                 int x = 0x280;
-                if (QueryGameStatus_C42D90() == 1) {
-                    // 1.2 constant at 0x10BCA8C is -0.0f; preserving source arithmetic.
+                if (QueryGameStatus_C42D90() == 1)
                     x -= truncf(GetSplitState_123457C()->splitScale2 * -0.0f);
-                }
                 List_9E5020(self, text, x, xCursor);
             }
 
             if (current < limit) {
                 Format_E63B3E(text, Fmt_FA6C14(), UiArray_112C144(i));
-                int x;
-                if (QueryGameStatus_C42D90() != 1) {
-                    x = 0x3FC;
-                } else {
-                    // Original constant is -380.0f.
-                    x = 0x280 - truncf(GetSplitState_123457C()->splitScale2 * -380.0f);
-                }
+                int x = QueryGameStatus_C42D90() != 1
+                          ? 0x3FC
+                          : 0x280 - truncf(GetSplitState_123457C()->splitScale2 * -380.0f);
                 List_9E5020(self, text, x, xCursor);
             }
         }
@@ -155,7 +132,7 @@ void SplitTop22_A24850(void* self)
                     UiTable_112C080(0), footerId, 0x60);
 
     SplitDrawPrimary_A23A00(self, 2);
-    SplitDrawSecondary_A23B40(self);
+    DrawSecondarySplitMenu_A23B40(self);
 }
 
 } // namespace re5::split120
