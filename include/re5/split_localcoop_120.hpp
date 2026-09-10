@@ -10,9 +10,15 @@ struct AGame120 {
     std::int32_t pendingSlot;         // +0x354
 };
 
+struct SplitResource120 {
+    std::uint32_t vtable;             // +0x00
+    std::uint32_t flags;              // +0x04 (bit 0x2000 used by split resource)
+    std::uint8_t _08[0x230 - 0x08];
+};
+
 struct SplitRenderState120 {
     std::uint8_t _00[0x3008];
-    void* secondarySplitResource;     // +0x3008
+    SplitResource120* secondarySplitResource; // +0x3008
     std::uint8_t _300C[0x3064 - 0x300C];
     std::uint8_t splitActive;         // +0x3064
     std::uint8_t _3065[3];
@@ -32,5 +38,7 @@ void SetLocalPlayerActive(bool active, int slot, int device);
 void BeginAddPlayer(AGame120* self, int slot, int device, bool sourceIsKeyboard);
 void PollLocalJoin_723460(AGame120* self);
 void RecalculateSplitGeometry_76C0C0(SplitRenderState120* self);
+void UpdateSplitActivationAndResource_76C1F0(SplitRenderState120* self);
+void ReleaseSecondarySplitResource(SplitRenderState120* self);
 
 } // namespace re5::split120
