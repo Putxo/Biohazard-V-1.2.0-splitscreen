@@ -11,7 +11,7 @@ VA,provisional_name,status,role,evidence
 0x00A24850,SplitTop22,Partial,large split-aware UI builder,"direct disassembly of complete 0x421-byte body; structured C++ reconstruction committed; helper semantics still provisional"
 0x00A1B0E0,SplitDisplayObserverFamily,Discovered,parent display/split observer family,"contains direct +0x3084/+0x3085 refs; helper 0xA1B240 now recovered separately"
 0x00A1B240,DetectResolutionOrFullSplitChange,Verified,dynamic resolution/full split change detector,"single confirmed 1.2 caller at 0xA1E653; compares cached +0x50/+0x54/+0x58 against dimensions and IsFullSplitEffective"
-0x00A1BE00,RebuildSplitUiGeometry,Discovered,split-aware UI geometry rebuild,"called when 0xA1B240 reports a display/full-state change; Stage27 target"
+0x00A1BE00,ApplySplitWidgetPositions,Partial,split-aware UI geometry rebuild,"11-widget native 1.2 block repeated at +0x1F8; exact 22 position formulas recovered and validated; one scale-vector local remains unresolved"
 0x00A22C00,SplitGeometryTail,Discovered,split geometry/aspect tail,"direct refs +0x3084/+0x3085; Stage29"
 0x00B793B0,SplitCursorPreClamp,Discovered,per-player/full/default cursor clamp,"Stage30"
 0x009EB9D0,SplitStateChangeDetector,Discovered,fullscreen-state cache/change detector,"Stage32"
