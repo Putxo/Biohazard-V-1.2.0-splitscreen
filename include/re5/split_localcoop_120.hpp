@@ -6,31 +6,31 @@ namespace re5::split120 {
 
 struct AGame120 {
     std::uint8_t _00[0x350];
-    std::int32_t pendingDevice;       // +0x350
-    std::int32_t pendingSlot;         // +0x354
+    std::int32_t pendingDevice;
+    std::int32_t pendingSlot;
 };
 
 struct SplitResource120 {
-    std::uint32_t vtable;             // +0x00
-    std::uint32_t flags;              // +0x04 (bit 0x2000 used by split resource)
+    std::uint32_t vtable;
+    std::uint32_t flags;
     std::uint8_t _08[0x230 - 0x08];
 };
 
 struct SplitRenderState120 {
     std::uint8_t _00[0x3008];
-    SplitResource120* secondarySplitResource; // +0x3008
+    SplitResource120* secondarySplitResource;
     std::uint8_t _300C[0x3064 - 0x300C];
-    std::uint8_t splitActive;         // +0x3064
+    std::uint8_t splitActive;
     std::uint8_t _3065[3];
-    std::int32_t splitI0;             // +0x3068
-    std::int32_t splitI1;             // +0x306C
-    float splitScale;                 // +0x3070
-    float splitParam;                 // +0x3074
-    float splitScale2;                // +0x3078
-    float splitOffset;                // +0x307C
-    float splitVertical;              // +0x3080
-    std::uint8_t fullScreenSplitMode; // +0x3084
-    std::uint8_t transientSplitFlag;  // +0x3085
+    std::int32_t splitI0;
+    std::int32_t splitI1;
+    float splitScale;
+    float splitParam;
+    float splitScale2;
+    float splitOffset;
+    float splitVertical;
+    std::uint8_t fullScreenSplitMode;
+    std::uint8_t transientSplitFlag;
 };
 
 bool IsFullSplitEffective(const SplitRenderState120* self);
@@ -40,5 +40,9 @@ void PollLocalJoin_723460(AGame120* self);
 void RecalculateSplitGeometry_76C0C0(SplitRenderState120* self);
 void UpdateSplitActivationAndResource_76C1F0(SplitRenderState120* self);
 void ReleaseSecondarySplitResource(SplitRenderState120* self);
+
+void SplitDrawPrimary_A23A00(void* self, int itemIndex);
+void DrawSecondarySplitMenu_A23B40(void* self);
+void SplitTop22_A24850(void* self);
 
 } // namespace re5::split120
