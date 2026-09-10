@@ -1,53 +1,56 @@
-# RE5DX9 1.2.0 — pregame scenario selector / two-local-slot branch
+# RE5DX9 1.2.0 — 0x769610 Benchmark/Demo-FPS scenario selector
 
 Direct authority: unpacked 1.2.0 executable SHA-256 `1c2d07d4d94c3d72833700f4fef114c7320b855e83e205e30df8b14186ec8cd8`.
 
+## Correction to earlier interpretation
+
+The five values handled at `0x76965C..0x7696AD` are hexadecimal `0x320..0x324`, i.e. decimal stages **800..804**. Project stage maps identify these as the Benchmark / Demo-FPS scenario family, not Lost in Nightmares, Desperate Escape, Mercenaries or Mercenaries Reunion.
+
+This matters because the two-slot-shaped setup reached by four of these variants must **not** be used as evidence for local-coop reachability in those gameplay modes.
+
 ## 0x769610 selector
 
-At `0x76965C..0x7696AD`, the function reads the selected player-state value at `playerRoot + index*0x5940 + 0x273D8` and maps five consecutive values:
+The function reads the selected player-state value at `playerRoot + index*0x5940 + 0x273D8` and maps:
 
-- `0x320 -> self+0x1849 = 0`
-- `0x321 -> self+0x1849 = 1`
-- `0x322 -> self+0x1849 = 2`
-- `0x323 -> self+0x1849 = 3`
-- `0x324 -> self+0x1849 = 4`
+- `0x320 (800) -> self+0x1849 = 0`
+- `0x321 (801) -> self+0x1849 = 1`
+- `0x322 (802) -> self+0x1849 = 2`
+- `0x323 (803) -> self+0x1849 = 3`
+- `0x324 (804) -> self+0x1849 = 4`
 
 For other values the previous `+0x1849` value is retained.
 
-Native then computes `BL = (variant >= 4)` and separately reduces the compact variant modulo four for an earlier reset path.
+Native computes `BL = (variant >= 4)` and separately reduces the compact variant modulo four for an earlier reset path.
 
-## Branch controlling the two-slot setup
+## Branch controlling the two-slot-shaped setup
 
-At `0x769971`, native loads that `BL` flag:
+At `0x769971`:
 
-- `BL == 0` (variants 0..3): enters `0x7699A1` and reaches the full two-slot preparation block `0x769A63..0x769B7F`.
-- `BL == 1` (variant 4): enters `0x769987`, writes `session+0x478 = 0`, emits event `0x26`, and skips the two-slot setup.
+- `BL == 0` (variants 0..3 / stages 800..803): enters `0x7699A1` and reaches `0x769A63..0x769B7F`.
+- `BL == 1` (variant 4 / stage 804): enters `0x769987`, writes `session+0x478 = 0`, emits event `0x26`, and skips that setup.
 
-Therefore the two-local-slot pregame branch is not a generic unconditional initializer. It is selected by this five-way scenario family, with only the first four members enabling the two-slot session layout.
+`0x769A63..0x769B7F` writes:
 
-## Exact two-slot layout
-
-`0x769A63..0x769B7F`:
-
-- `session+0x478 = 3` (slots 0 and 1 available)
+- `session+0x478 = 3`
 - `session+0x47C = 0`
-- slot modes 0 and 1 set to `1` via `0xC42A30`
-- slot 0 device = preferred input device at `input+0x5D8`
-- slot 1 device = `-1`
-- the paired per-slot fields handled by `0xC42A70`, `0xC42A90`, `0xC42AB0`, `0xC42D70` are zeroed for both slots
-- event `0x25` is emitted afterwards
-- `session+0x570 = 2` before return
+- slot modes 0 and 1 = 1
+- slot 0 device = preferred device `input+0x5D8`
+- slot 1 device = -1
+- paired fields handled by `0xC42A70`, `0xC42A90`, `0xC42AB0`, `0xC42D70` are zeroed for both slots
+- event `0x25`
+- `session+0x570 = 2`
 
-## Callers
+## Independent binary corroboration
 
-Direct callers of `0x769610` found in the 1.2.0 PE:
+Direct 1.2 disassembly also shows:
 
-- `0x71819B`
-- `0x769CC0`
-- `0xBF461C`
+- `0x715D10` tests the stage range `0x320 <= stage < 0x384`.
+- caller `0x718180` dispatches scenario identifiers `0x323`, `0x324` or `0x320` according to `session+0x79D` after calling `0x769610`.
+- `0x76C44B` has a specific comparison against stage `0x324`.
+- the surrounding `0x769C05` family compares against `0x322` and `0x324`.
 
-The `0x718180` and `0xBF45E0` callers both inspect `session+0x79D` after/before this setup and dispatch scenario identifiers `0x323` / `0x324` through other native helpers, confirming that this area is a pregame scenario-family initializer rather than the Story live-join detector.
+These references reinforce that `0x769610` belongs to the special Benchmark/Demo scenario family.
 
-## Current boundary
+## Consequence for split-screen reconstruction
 
-The numeric selector mapping and the two-slot/no-slot branch are instruction-verified. The semantic names of scenario IDs `0x320..0x324` are not assigned here yet; that requires tracing their producers/consumers further instead of guessing which one corresponds to LIN/DE/Mercenaries/Reunion.
+The search for native local co-op in LIN / DE / Mercenaries / Reunion must continue elsewhere. The high-value native route is the mode predicate at `0xC43BB0` and its input precheck caller `0x799B50`, because the exact 1.2 PE explicitly recognizes modes 2 and 5 when `session+0x5CC == 2`.
