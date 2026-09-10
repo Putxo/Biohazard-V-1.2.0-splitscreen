@@ -1,0 +1,20 @@
+name: Static Win32 decomp build
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure i686 COFF static library
+        run: cmake -S . -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/win32-clang.cmake
+      - name: Build
+        run: cmake --build build --verbose
+      - name: Inspect archive
+        run: |
+          file build/* || true
+          find build -maxdepth 2 -type f -name '*.a' -o -name '*.lib'
