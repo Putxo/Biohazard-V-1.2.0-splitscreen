@@ -12,10 +12,15 @@ add_library(re5_split120 STATIC
     src/split_local_join_root_state_120.cpp
     src/split_root_flag_helpers_120.cpp
     src/split_agame_state10_local_transition_120.cpp
+    src/split_agame_dispatch_120.cpp
+    src/split_story_local_join_driver_120.cpp
     src/split_local_transition_helpers_120.cpp
     src/split_index1_flag_routes_120.cpp
     src/split_local_join_bit800_refresh_120.cpp
     src/split_player_input_routing_120.cpp
+    src/split_input_owner_queries_120.cpp
+    src/split_owner_physical_input_120.cpp
+    src/split_selected_local_device_120.cpp
     src/split_gameplay_keyboard_owner_120.cpp
     src/split_ui_input_base_120.cpp
     src/split_state13_120.cpp
