@@ -55,8 +55,6 @@ void BeginAddPlayer(AGame120* self, int slot, int device, bool sourceIsKeyboard)
 }
 
 // 0x00C42CB0 — VERIFIED.
-// Returns the first slot 0..3 for which bit(slot) is set in session+0x478 and
-// slotMode[slot] at +0x480 is exactly 1. Returns -1 when none matches.
 int FindJoinableSessionSlot_C42CB0(const std::uint8_t* session)
 {
     const auto mask = *reinterpret_cast<const std::uint32_t*>(session + 0x478);
@@ -72,25 +70,20 @@ extern InputManager120* gInputManager_1249C40;
 extern SplitRenderState120* gSplitRenderState_123457C;
 extern bool InputJoinTrigger_76A410(SplitRenderState120* split);
 
-// The fields below are only the portions touched by the verified join helpers.
 struct InputManagerJoinView120 {
     std::uint8_t _0000[0x5D8];
-    std::int32_t preferredDevice;       // +0x5D8
-    std::uint8_t inputBlocked;          // +0x5DC
+    std::int32_t preferredDevice;
+    std::uint8_t inputBlocked;
     std::uint8_t _5DD[0x5F0 - 0x5DD];
-    std::uint8_t keyboardMode;          // +0x5F0
+    std::uint8_t keyboardMode;
     std::uint8_t _5F1[0x5FC - 0x5F1];
-    float joinTimer;                    // +0x5FC
+    float joinTimer;
     std::uint8_t _600[0x61C - 0x600];
-    std::uint8_t controllerScanArmed;   // +0x61C
+    std::uint8_t controllerScanArmed;
 };
 
 extern std::uint8_t* gPlayerInputState_1249C40;
 
-// 0x0079ADA0 — VERIFIED.
-// Scans only controller indices 0 and 1 (stride 0x2C0, stop at 0x580).
-// A candidate must differ from +0x5D8, have input-state flag 0x08 at +0x198,
-// and pass 0x76A410. On success it writes the device index to outDevice.
 bool DetectControllerJoin_79ADA0(InputManagerJoinView120* self, int* outDevice)
 {
     if (self->inputBlocked != 0)
@@ -100,25 +93,18 @@ bool DetectControllerJoin_79ADA0(InputManagerJoinView120* self, int* outDevice)
     for (int device = 0, off = 0; off < 0x580; ++device, off += 0x2C0) {
         if (self->preferredDevice == device)
             continue;
-
         auto* state = reinterpret_cast<const std::uint8_t*>(gPlayerInputState_1249C40) + off;
         if ((state[0x198] & 0x08) == 0)
             continue;
-
         if (InputJoinTrigger_76A410(gSplitRenderState_123457C)) {
             *outDevice = device;
             return true;
         }
-
-        // Exact native side effect on a failed trigger.
         self->joinTimer = *reinterpret_cast<const float*>(0x00F52D5C);
     }
     return false;
 }
 
-// 0x0079AE20 — VERIFIED.
-// Same two-device scan, but only while keyboardMode==0 and candidate device is
-// exactly +0x5D8. This is the complementary branch to 0x79ADA0.
 bool DetectKeyboardJoin_79AE20(InputManagerJoinView120* self, int* outDevice)
 {
     if (self->inputBlocked != 0 || self->keyboardMode != 0)
@@ -127,16 +113,13 @@ bool DetectKeyboardJoin_79AE20(InputManagerJoinView120* self, int* outDevice)
     for (int device = 0, off = 0; off < 0x580; ++device, off += 0x2C0) {
         if (self->preferredDevice != device)
             continue;
-
         auto* state = reinterpret_cast<const std::uint8_t*>(gPlayerInputState_1249C40) + off;
         if ((state[0x198] & 0x08) == 0)
             continue;
-
         if (InputJoinTrigger_76A410(gSplitRenderState_123457C)) {
             *outDevice = device;
             return true;
         }
-
         self->joinTimer = *reinterpret_cast<const float*>(0x00F52D5C);
     }
     return false;
@@ -144,9 +127,6 @@ bool DetectKeyboardJoin_79AE20(InputManagerJoinView120* self, int* outDevice)
 
 extern bool FallbackInputBitGate_79AEA0(InputManagerJoinView120* self);
 
-// 0x0079C1E0 — VERIFIED.
-// The fallback path is only available when input is not blocked and
-// keyboardMode is non-zero; the final decision is delegated to 0x79AEA0.
 bool DetectFallbackJoin_79C1E0(InputManagerJoinView120* self)
 {
     if (self->inputBlocked != 0)
@@ -156,10 +136,6 @@ bool DetectFallbackJoin_79C1E0(InputManagerJoinView120* self)
     return FallbackInputBitGate_79AEA0(self);
 }
 
-// 0x0079AEA0 — VERIFIED.
-// Tests bit 0x08000000 in the per-input record selected by +0x5E8. If set,
-// 0x76A410 must also succeed. Failed trigger refreshes +0x5FC exactly as the
-// controller/keyboard scans do.
 bool FallbackInputBitGate_79AEA0(InputManagerJoinView120* self)
 {
     const int index = *reinterpret_cast<const std::int32_t*>(
@@ -168,19 +144,48 @@ bool FallbackInputBitGate_79AEA0(InputManagerJoinView120* self)
     const auto flags = *reinterpret_cast<const std::uint32_t*>(base + index * 0x8C0 + 0x120);
     if ((flags & 0x08000000u) == 0)
         return false;
-
     if (InputJoinTrigger_76A410(gSplitRenderState_123457C))
         return true;
-
     self->joinTimer = *reinterpret_cast<const float*>(0x00F52D5C);
     return false;
+}
+
+// 0x00716310 — VERIFIED.
+// If system flag 0x1000 is clear, or self+0xE8 is null, local join is allowed.
+// Otherwise native helper 0xA2CF60 decides using the object at self+0xE8.
+extern bool LocalJoinGateObject_A2CF60(void* object);
+bool LocalJoinEnvironmentAllowed_716310(AGame120* self)
+{
+    const auto* root = *reinterpret_cast<std::uint8_t* const*>(0x012340A4);
+    const auto flags = *reinterpret_cast<const std::uint32_t*>(root + 0x10438);
+    if ((flags & 0x1000u) == 0)
+        return true;
+
+    void* object = *reinterpret_cast<void**>(reinterpret_cast<std::uint8_t*>(self) + 0xE8);
+    if (object == nullptr)
+        return true;
+    return LocalJoinGateObject_A2CF60(object);
+}
+
+// 0x00716340 — VERIFIED.
+// Native code tests self+0xD4 first. Otherwise it returns bit7 OR bit6 of the
+// LOW BYTE at root+0x10438 (TEST AL,AL / JS, then SHR AL,6 / AND 1).
+bool LocalJoinBusy_716340(AGame120* self)
+{
+    if (*reinterpret_cast<const std::int32_t*>(
+            reinterpret_cast<const std::uint8_t*>(self) + 0xD4) != 0)
+        return true;
+
+    const auto* root = *reinterpret_cast<std::uint8_t* const*>(0x012340A4);
+    const std::uint8_t low = *(root + 0x10438);
+    if ((low & 0x80u) != 0)
+        return true;
+    return (low & 0x40u) != 0;
 }
 
 extern bool GlobalJoinGuardsPass();
 extern bool SessionModeAllowsLocalJoin();
 extern bool SessionLocalJoinStateClear();
-extern bool LocalJoinEnvironmentAllowed_716310(AGame120*);
-extern bool LocalJoinBusy_716340(AGame120*);
 extern int  CountActivePlayers_C42B60();
 extern int  CurrentPreferredJoinSlot();
 extern int  FallbackKeyboardDevice();
