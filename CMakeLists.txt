@@ -20,6 +20,7 @@ add_library(re5_split120 STATIC
     src/split_story_pause_state9_render_120.cpp
     src/split_keyboard_player_no_120.cpp
     src/split_trial_split_120.cpp
+    src/split_trial_join_device_120.cpp
     src/split_session_slots_120.cpp
     src/split_pregame_two_slot_120.cpp
     src/split_mode_pregame_120.cpp
