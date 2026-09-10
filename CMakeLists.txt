@@ -25,6 +25,7 @@ add_library(re5_split120 STATIC
     src/split_ui_metrics_120.cpp
     src/split_draw_dispatch_120.cpp
     src/split_centered_draw_120.cpp
+    src/split_extent_shift_draw_120.cpp
     src/split_ui_primary_120.cpp
     src/split_ui_draw_120.cpp
     src/split_top22_120.cpp
