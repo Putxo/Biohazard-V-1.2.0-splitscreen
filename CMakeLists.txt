@@ -24,6 +24,13 @@ add_library(re5_split120 STATIC
     src/split_owner_physical_input_120.cpp
     src/split_selected_local_device_120.cpp
     src/split_gameplay_keyboard_owner_120.cpp
+    src/split_gameplay_owner_completion_120.cpp
+    src/split_input_availability_120.cpp
+    src/split_routed_prompt_120.cpp
+    src/split_preferred_device_owner_binding_120.cpp
+    src/split_keyboard_owner_writers_completion_120.cpp
+    src/split_ui_owner_state_families_120.cpp
+    src/split_ui_owner_consumer_completion_120.cpp
     src/split_ui_input_base_120.cpp
     src/split_state13_120.cpp
     src/split_story_pause_records_120.cpp
@@ -60,6 +67,7 @@ add_library(re5_split120 STATIC
     src/split_mercs_player_device_owner_120.cpp
     src/split_mercs_frontend_player_init_120.cpp
     src/split_mercs_mode_consumers_120.cpp
+    src/split_mercs_owner_gate_completion_120.cpp
     src/split_session_population_gate_120.cpp
     src/split_mercs_join_completion_gate_120.cpp
     src/split_mercs_state3_refresh_120.cpp
@@ -69,6 +77,10 @@ add_library(re5_split120 STATIC
     src/split_mercs_frontend_owner_120.cpp
     src/split_event_request_120.cpp
     src/split_render_120.cpp
+    src/split_coordinate_helpers_120.cpp
+    src/split_state_object_init_120.cpp
+    src/split_viewport_state_update_120.cpp
+    src/split_overlay_geometry_764ae0_120.cpp
     src/split_resource_120.cpp
     src/split_resource_geometry_120.cpp
     src/split_resource_geometry_blocks_120.cpp
@@ -82,14 +94,18 @@ add_library(re5_split120 STATIC
     src/split_cursor_120.cpp
     src/split_cursor_input_120.cpp
     src/split_widget_projection_120.cpp
+    src/split_widget_screen_projection_remaining_120.cpp
     src/split_state_change_120.cpp
     src/split_aspect_correction_120.cpp
     src/split_aspect_input_120.cpp
     src/split_aspect_draw_wrapper_120.cpp
+    src/split_j1_j2_anchor_geometry_120.cpp
+    src/split_measured_x_delta_120.cpp
     src/split_fullscreen_option_120.cpp
     src/split_localjoin_mode_gate_120.cpp
     src/split_visibility_guard_120.cpp
     src/player_state_accessor_120.cpp
+    src/split_table_owner_preguard_120.cpp
     src/split_table_fallback_120.cpp
     src/split_table_draw_120.cpp
     src/split_explicit_fallback_cases_120.cpp
@@ -104,6 +120,12 @@ add_library(re5_split120 STATIC
     src/split_ui_primary_120.cpp
     src/split_ui_draw_120.cpp
     src/split_top22_120.cpp
+    src/split_two_local_player_ui_120.cpp
+    src/split_local_player_overlay_draw_120.cpp
+    src/split_hud_geometry_completion_120.cpp
+    src/split_inline_geometry_completion_120.cpp
+    src/split_menu_layout_families_120.cpp
+    src/split_prompt_and_remaining_geometry_120.cpp
 )
 
 target_include_directories(re5_split120 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
