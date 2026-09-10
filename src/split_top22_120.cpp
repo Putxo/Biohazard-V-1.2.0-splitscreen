@@ -17,10 +17,22 @@ extern const void* UiTableEntry_112C080(int index);
 extern std::uint32_t UiArray_112C144(int index);
 extern void DrawMain_9E5E90(void* self, int a0, int x, int y,
                             const void* descriptorRef, int id, int h);
-extern void DrawNamed_9E5330(void* self, const char* name, int x, int y,
-                             const float* scale, float one);
-extern void Format_E63B3E(char* dst, const char* fmt, std::uint32_t value);
+
+// 0x9E5330 is thiscall + six stack arguments (RET 0x18):
+//   key/name, x, y, descriptor pointer, scaleX, scaleY.
+// Direct disassembly writes x/y to widget+0x50/+0x54 and the final two floats
+// to widget+0x70/+0x74 after applying the descriptor through 0x9E3310.
+extern void DrawNamed_9E5330(void* self,
+                             const char* key,
+                             int x,
+                             int y,
+                             const void* descriptor,
+                             float scaleX,
+                             float scaleY);
+
+// 0x9E5020 is thiscall + three stack arguments (RET 0x0C): text, x, y.
 extern void List_9E5020(void* self, char* text, int x, int y);
+extern void Format_E63B3E(char* dst, const char* fmt, std::uint32_t value);
 extern const char* Str_FA80D4();
 extern const char* Str_FA80CC();
 extern const char* Str_10BAC14();
@@ -39,9 +51,16 @@ static inline int truncf(float v) { return static_cast<int>(v); }
 
 } // namespace
 
-// 0x00A24850..0x00A24C70
-// Direct structured reconstruction. The body is fully disassembled, but the
-// semantic names/types of 0x9E5330/0x9E5020 data arguments remain provisional.
+// 0x00A24850..0x00A24C70 -- VERIFIED.
+// Full body audited directly against the unpacked RE5DX9 1.2.0 executable.
+// Important stack-alias details preserved below:
+//   * native loop executes exactly once (EBP=0; ++EBP; CMP EBP,1/JL),
+//   * entry-local baseIndex survives independently of the optional 86% drawIndex,
+//   * first/footer 0x9E5E90 calls use literal 0x112C080,
+//   * the middle 0x9E5E90 and all 0x9E5330 calls use &descriptor, a stack-local
+//     copy of one 0x112C080 table entry,
+//   * 0x9E5330 receives two separate float scale arguments; it does not receive
+//     &scale as its descriptor.
 void SplitTop22_A24850(void* self)
 {
     const int baseIndex = UiIndex_A17800(self); // EDI at entry
@@ -54,7 +73,6 @@ void SplitTop22_A24850(void* self)
         topWord = ReadWord_112BDF2();
     }
 
-    // Native first draw pushes literal address 0x112C080, not table[0].
     DrawMain_9E5E90(self, baseIndex, 0x280, static_cast<std::int16_t>(topWord),
                     DescriptorTableBase_112C080(), 0x530, 0x60);
 
@@ -66,14 +84,11 @@ void SplitTop22_A24850(void* self)
         yCursor += 0x34;
     }
 
-    // Native loop executes exactly once: EBP=0, then ++EBP and CMP EBP,1/JL.
     const int i = 0;
     int drawIndex = baseIndex;
     if (i != f<std::int32_t>(self, 0x48))
         drawIndex = (baseIndex * 0x56) / 100;
 
-    // The selected table value is stored in a stack local; 0x9E5E90 receives
-    // the address of that local, not the raw table entry value directly.
     const void* descriptor = UiTableEntry_112C080(
         i == f<std::int32_t>(self, 0x48) ? 0 : 1);
 
@@ -90,7 +105,8 @@ void SplitTop22_A24850(void* self)
         x = QueryGameStatus_C42D90() != 1
             ? 0x33E
             : 0x280 - truncf(GetSplitState_123457C()->splitScale2 * -190.0f);
-        DrawNamed_9E5330(self, Str_FA80D4(), x, yCursor, &scale, 1.0f);
+        DrawNamed_9E5330(self, Str_FA80D4(), x, yCursor,
+                         &descriptor, scale, 1.0f);
 
         const int ratio = (f<std::int32_t>(self, 0x190) * 0x137) /
                           f<std::int32_t>(self, 0x194);
@@ -100,13 +116,13 @@ void SplitTop22_A24850(void* self)
                             GetSplitState_123457C()->splitScale2) + 0x280;
         }
         DrawNamed_9E5330(self, Str_FA80CC(), pointX, yCursor + 0x11,
-                         &scale, 1.0f);
+                         &descriptor, scale, 1.0f);
 
         x = QueryGameStatus_C42D90() != 1
             ? 0x33C
             : 0x280 - truncf(GetSplitState_123457C()->splitScale2 * -188.0f);
         DrawNamed_9E5330(self, Str_10BAC14(), x, yCursor + 0x4E,
-                         &scale, 1.0f);
+                         &descriptor, scale, 1.0f);
     }
 
     if (i == f<std::int32_t>(self, 0x48)) {
@@ -131,9 +147,6 @@ void SplitTop22_A24850(void* self)
         }
     }
 
-    // A24C10 adds entry-local [S+0x14] == baseIndex. It does NOT add the
-    // potentially 86%-scaled drawIndex. After POP EBP, A24C31 and A24C40
-    // reference that same baseIndex local again.
     yCursor += baseIndex;
     yCursor += 0x82;
     if (f<std::int32_t>(self, 0x20) == 0)
