@@ -19,6 +19,7 @@ add_library(re5_split120 STATIC
     src/split_visibility_guard_120.cpp
     src/player_state_accessor_120.cpp
     src/split_table_fallback_120.cpp
+    src/split_hit_test_120.cpp
     src/split_ui_primary_120.cpp
     src/split_ui_draw_120.cpp
     src/split_top22_120.cpp
