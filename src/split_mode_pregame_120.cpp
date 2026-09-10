@@ -23,8 +23,10 @@ static inline Session120* Session()
     return *reinterpret_cast<Session120**>(gRoot_12340A4 + 0x1042C);
 }
 
-// 0x76965C..0x7696AD: native maps selected scenario id 0x320..0x324
-// from player-state +0x273D8 to a compact variant 0..4 at self+0x1849.
+// 0x76965C..0x7696AD: native maps selected stage/scenario id 0x320..0x324
+// (decimal 800..804, the Benchmark/Demo-FPS family) from player-state
+// +0x273D8 to compact variant 0..4 at self+0x1849. This is NOT the
+// LIN/DE/Mercenaries/Reunion local-coop mode selector.
 std::uint8_t ResolvePregameVariant_76965C(const std::uint8_t* playerRoot,
                                           std::uint8_t previous)
 {
@@ -41,9 +43,10 @@ std::uint8_t ResolvePregameVariant_76965C(const std::uint8_t* playerRoot,
     }
 }
 
-// 0x769A63..0x769B7F: exact two-slot pregame session shape reached only
-// when the compact scenario variant is below 4. Variant 4 takes the
-// 0x769987 branch instead and clears availableMask.
+// 0x769A63..0x769B7F: exact two-slot session shape reached for Benchmark
+// variants 0..3. Variant 4 takes 0x769987 instead and clears availableMask.
+// Despite the two-slot-shaped data, this block must not be used as evidence
+// for DLC/Mercenaries local-coop reachability.
 void PreparePregameTwoLocalSlots_769A63()
 {
     auto* session = Session();
