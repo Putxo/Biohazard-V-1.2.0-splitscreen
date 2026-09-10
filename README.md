@@ -28,11 +28,11 @@ The reverse-engineering work uses the unpacked runnable 1.2.0 analysis candidate
 
 The packed retail executable is not committed here.
 
-## Current restart status
+## Current progress
 
-This repository was restarted from zero for the split-screen-only decompilation. The first recovered/identified functions are tracked in `analysis/functions.csv` and reconstructed under `src/`.
+### Stage 1
 
-Current high-confidence anchors:
+Recovered/identified:
 
 - `0x00763170` — effective Full split predicate.
 - `0x0076C0C0` — central split geometry calculation.
@@ -40,6 +40,27 @@ Current high-confidence anchors:
 - `0x00720CE0` — transition into native Add Player state.
 - `0x00716720` — activate/deactivate local player slot.
 - `0x00725C23` — state-13 callsite into local-player activation.
+
+### Stage 2
+
+`0x0076C1F0` has been promoted from Discovered to Partial and reconstructed as the split activation/resource-lifecycle routine:
+
+- updates `splitActive` at `+0x3064`;
+- general aspect threshold `0.5625`;
+- special status-7 path involving threshold `0.425`;
+- allocates a native `0x230` secondary split resource when needed;
+- stores it at `+0x3008`;
+- sets resource flag `0x2000`;
+- registers it using native id `0x1E`;
+- cleanup clears `0x2000`, calls virtual release at vtable `+0x30`, and nulls the pointer.
+
+Next render anchors added to the catalog:
+
+- `0x00A23A00` — split draw operation.
+- `0x00A23B40` — secondary split draw operation.
+- `0x00A24850..0x00A24C70` — larger split-only render/UI family.
+
+The next pass follows those functions to recover viewport-specific rendering and HUD/text containment.
 
 ## Status rules
 
