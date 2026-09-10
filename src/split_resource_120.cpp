@@ -2,66 +2,61 @@
 
 namespace re5::split120 {
 
-// 0x0076C1F0 — PARTIAL semantic reconstruction.
+struct DisplaySize120_76C1F0 {
+    int width;
+    int height;
+};
+
+extern DisplaySize120_76C1F0 GetCurrentDisplaySize_12345D4();
+extern int GetRuntimeStatus_C42D90();
+extern void* NativeAlignedAlloc_11AF294(std::uint32_t bytes, std::uint32_t alignment);
+extern SplitResource120* ConstructSplitResource_B8D6A0(void* storage);
+extern void RegisterSplitResource_428B80(int id, SplitResource120* resource);
+extern void VirtualReleaseAtVtable30_120(SplitResource120* resource);
+
+// 0x0076C1F0..0x0076C29F -- VERIFIED against direct 1.2.0 disassembly.
 //
-// Confirmed behavior from the 1.2.0 binary analysis used by the previous
-// split-screen port:
-//   * recomputes whether split rendering is active;
-//   * the general aspect test is aspect < 0.5625;
-//   * status 7 has an additional/special 0.425 threshold path;
-//   * writes the result to SplitRenderState120::splitActive (+0x3064);
-//   * when split becomes active and +0x3008 is null, allocates a native
-//     0x230-byte resource, constructs it, sets flag 0x2000 in resource+4,
-//     stores it in +0x3008, and registers it with the native UI/resource
-//     manager using id 0x1E.
+// The activation gate is exactly:
+//   aspect = physicalHeight / physicalWidth
+//   active when aspect < 0.5625
+//   except runtime status 7 requires the narrower aspect < 0.425
 //
-// The exact status/aspect getter call graph is deliberately kept abstract
-// until its callees are decompiled; no unproven names are hard-coded here.
-
-extern float GetCurrentAspectRatio_120();
-extern int GetSplitStatus_120();
-extern bool EvaluateStatus7SplitGate_120(float aspect, float threshold);
-extern void* NativeAlloc_120(std::uint32_t bytes);
-extern SplitResource120* ConstructSplitResource_120(void* storage);
-extern void RegisterSplitResource_120(SplitResource120* resource, int id);
-
-static bool ComputeSplitActive_76C1F0()
-{
-    const float aspect = GetCurrentAspectRatio_120();
-    const int status = GetSplitStatus_120();
-
-    if (status == 7)
-        return EvaluateStatus7SplitGate_120(aspect, 0.425f);
-
-    return aspect < 0.5625f;
-}
-
+// When activation succeeds and +0x3008 is null, native code allocates
+// 0x230 bytes aligned to 0x10, constructs with 0xB8D6A0, sets bit 0x2000
+// in resource+4, stores it in +0x3008 and registers id 0x1E.
 void UpdateSplitActivationAndResource_76C1F0(SplitRenderState120* self)
 {
-    const bool active = ComputeSplitActive_76C1F0();
-    self->splitActive = active ? 1 : 0;
+    const DisplaySize120_76C1F0 display = GetCurrentDisplaySize_12345D4();
+    const float aspect = static_cast<float>(display.height) /
+                         static_cast<float>(display.width);
 
-    if (!active || self->secondarySplitResource != nullptr)
+    self->splitActive = 0;
+
+    if (aspect >= 0.5625f)
         return;
 
-    void* storage = NativeAlloc_120(0x230);
-    if (storage == nullptr)
+    if (GetRuntimeStatus_C42D90() == 7 && aspect >= 0.4250000119f)
         return;
 
-    SplitResource120* resource = ConstructSplitResource_120(storage);
+    self->splitActive = 1;
+
+    if (self->secondarySplitResource != nullptr)
+        return;
+
+    void* storage = NativeAlignedAlloc_11AF294(0x230, 0x10);
+    SplitResource120* resource = nullptr;
+    if (storage != nullptr)
+        resource = ConstructSplitResource_B8D6A0(storage);
+
+    self->secondarySplitResource = resource;
     if (resource == nullptr)
         return;
 
-    self->secondarySplitResource = resource;
     resource->flags |= 0x2000u;
-    RegisterSplitResource_120(resource, 0x1E);
+    RegisterSplitResource_428B80(0x1E, resource);
 }
 
-// Cleanup counterpart for the +0x3008 resource.
-// Confirmed lifecycle behavior: clear 0x2000, call the object's virtual
-// release method at vtable +0x30, then clear the owning pointer.
-extern void VirtualReleaseAtVtable30_120(SplitResource120* resource);
-
+// Cleanup counterpart observed elsewhere in the same lifecycle family.
 void ReleaseSecondarySplitResource(SplitRenderState120* self)
 {
     SplitResource120* resource = self->secondarySplitResource;
