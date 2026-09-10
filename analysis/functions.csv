@@ -1,0 +1,8 @@
+VA,provisional_name,status,role,evidence
+0x00763170,IsFullSplitEffective,Verified,FULL/PREDETERMINADO predicate,"reads +0x3084,+0x3085"
+0x0076C0C0,RecalculateSplitGeometry,Partial,central split geometry,"writes +0x3068..+0x3080; branches on +0x3084/+0x3085"
+0x0076C1F0,UpdateSplitActivationAndResource,Discovered,split activation/resource lifecycle,"references +0x3008,+0x3064"
+0x00723460,PollLocalJoin,Partial,recurring local J2 join detector,"native input/local-join path"
+0x00720CE0,BeginAddPlayer,Partial,transition into Add Player state,"writes aGame +0x350,+0x354; transitions to state 13"
+0x00716720,SetLocalPlayerActive,Partial,activate/deactivate local player slot,"updates session active mask/slot mode/device"
+0x00725C23,State13ActivationCallsite,Discovered,Add Player state to player activation,"calls 0x00716720"
