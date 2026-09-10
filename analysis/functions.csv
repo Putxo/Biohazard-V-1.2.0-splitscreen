@@ -12,7 +12,7 @@ VA,provisional_name,status,role,evidence
 0x00A1B0E0,SplitDisplayObserverFamily,Discovered,parent display/split observer family,"contains direct +0x3084/+0x3085 refs; helper 0xA1B240 now recovered separately"
 0x00A1B240,DetectResolutionOrFullSplitChange,Verified,dynamic resolution/full split change detector,"single confirmed 1.2 caller at 0xA1E653; compares cached +0x50/+0x54/+0x58 against dimensions and IsFullSplitEffective"
 0x00A1BE00,RebuildSplitUiGeometry,Verified,split-aware UI geometry rebuild,"direct 0xA1BE00..0xA1C396 audit; +0x3070 stored into persistent local [esp+0x14] and reused for every XYZ scale vector; 11-widget block repeated +0x1F8"
-0x00A22C00,SplitGeometryTail,Discovered,split geometry/aspect tail,"direct refs +0x3084/+0x3085; Stage29"
+0x00A22C00,UpdateSplitGeometry,Verified,split geometry/aspect tail,"direct disassembly 0xA22C00..0xA22CF6; status==1 + splitActive + !FullEffective applies -(width-height*16/9)/2 scaled by uiWidth/renderWidth to +0x2C"
 0x00B793B0,SplitCursorPreClamp,Discovered,per-player/full/default cursor clamp,"Stage30"
 0x009EB9D0,SplitStateChangeDetector,Discovered,fullscreen-state cache/change detector,"Stage32"
 0x009EDE30,SplitResourceGeometryFamily,Partial,resource geometry family using scale2/full/active,"split-specific tail 0x9EF4CC..0x9EF55F reconstructed branch-exact"
