@@ -18,6 +18,7 @@ add_library(re5_split120 STATIC
     src/split_dlc_postconfirm_120.cpp
     src/split_session_mode_predicates_120.cpp
     src/split_dlc_local_activation_120.cpp
+    src/split_mercs_local_activation_120.cpp
     src/split_render_120.cpp
     src/split_resource_120.cpp
     src/split_resource_geometry_120.cpp
