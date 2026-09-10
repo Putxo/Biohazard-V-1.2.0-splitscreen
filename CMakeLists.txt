@@ -102,6 +102,7 @@ add_library(re5_split120 STATIC
     src/split_j1_j2_anchor_geometry_120.cpp
     src/split_measured_x_delta_120.cpp
     src/split_remaining_direct_geometry_120.cpp
+    src/split_remaining_scalar_and_composite_120.cpp
     src/split_fullscreen_option_120.cpp
     src/split_localjoin_mode_gate_120.cpp
     src/split_visibility_guard_120.cpp
