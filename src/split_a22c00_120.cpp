@@ -17,34 +17,47 @@ struct SplitGeometryNode120 {
     void* resource;              // +0x18C
 };
 
-extern int GetRuntimeStatus_C42D90();
-extern int ResolveSplitX_76A1E0(const SplitRenderState120* split, int playerIndex);
-extern int ResolveSplitY_76A250(const SplitRenderState120* split, int xIndex);
+struct RuntimeRootA22C120 {
+    std::uint8_t _0000[0x1042C];
+    void* session;               // +0x1042C
+};
+
+struct RenderDimensionsA22C120 {
+    std::uint8_t _00[0x50];
+    std::int32_t width;          // +0x50
+    std::int32_t height;         // +0x54
+};
+
+extern RuntimeRootA22C120* gRuntimeRoot_12340A4;
+extern SplitRenderState120* gSplitRenderState_123457C;
+extern RenderDimensionsA22C120* gRenderDimensions_12345D4;
+
+extern int GetRuntimeStatus_C42D90(void* session);
+extern int ResolveSplitX_76A1E0(SplitRenderState120* split, int playerIndex);
+extern int ResolveSplitY_76A250(SplitRenderState120* split, int xIndex);
 extern int GetUiWidth_9E3C80(int splitIndex);
 extern int GetUiHeight_9E3CD0(int splitIndex);
-extern int GetSessionDeviceForPlayer(int playerIndex); // session +0x490[player]
 
-// 0x00A22C00 -- VERIFIED against direct disassembly of the unpacked 1.2.0 EXE
-// through the RET at 0x00A22CF6.
+// 0x00A22C00..0x00A22CF6 -- VERIFIED against direct disassembly of the
+// unpacked RE5DX9 1.2.0 executable.
 //
-// Split-specific tail:
-//  - only manager status 1
-//  - requires split +0x3064 active
-//  - applies only when FULL is NOT effectively active
-//    (i.e. !fullScreenSplitMode || transientSplitFlag)
-//  - correction is based on horizontal letterbox/pillarbox excess at 16:9:
-//      excess = width - height * (16/9)
-//      correction = -(excess / 2) * uiWidth / width
-//  - correction is added to object +0x2C.
-void UpdateSplitGeometry_A22C00(SplitGeometryNode120* self,
-                                const SplitRenderState120* split,
-                                int renderWidth,
-                                int renderHeight)
+// Native ABI is thiscall with ECX=self and NO stack arguments (plain RET).
+// The previous reconstruction incorrectly modeled split/render dimensions as
+// caller-supplied parameters; the native function reads all of them from the
+// global objects at 0x123457C and 0x12345D4.
+void UpdateSplitGeometry_A22C00(SplitGeometryNode120* self)
 {
     if (!self->resource)
         return;
 
-    self->mappedDevice = GetSessionDeviceForPlayer(self->playerIndex);
+    auto* rootBytes = reinterpret_cast<std::uint8_t*>(gRuntimeRoot_12340A4);
+    auto* session = *reinterpret_cast<std::uint8_t**>(rootBytes + 0x1042C);
+
+    // A22C1C..A22C26: session+0x490[playerIndex].
+    self->mappedDevice = *reinterpret_cast<std::int32_t*>(
+        session + 0x490 + self->playerIndex * 4);
+
+    SplitRenderState120* split = gSplitRenderState_123457C;
 
     self->x = ResolveSplitX_76A1E0(split, self->playerIndex);
     if (self->x == -1)
@@ -54,21 +67,24 @@ void UpdateSplitGeometry_A22C00(SplitGeometryNode120* self,
     self->width  = GetUiWidth_9E3C80(self->x);
     self->height = GetUiHeight_9E3CD0(self->x);
 
-    // Exact signed divide-by-two idiom at A22C71..A22C7E.
+    // Exact CDQ/SUB/SAR signed divide-by-two sequence.
     self->xOrigin = (self->width - 0x500) / 2;
 
-    if (GetRuntimeStatus_C42D90() == 1 && split->splitActive) {
-        const bool fullEffective =
-            split->fullScreenSplitMode != 0 && split->transientSplitFlag == 0;
+    if (GetRuntimeStatus_C42D90(session) == 1 && split->splitActive) {
+        // Native effective-FULL gate:
+        //   +3084 != 0 && +3085 == 0  => skip correction.
+        if (!IsFullSplitEffective(split)) {
+            const RenderDimensionsA22C120* dims = gRenderDimensions_12345D4;
+            constexpr float kAspect16By9 = 1.7777777910232544f; // 0x3FE38E39
 
-        if (!fullEffective) {
-            constexpr float kAspect16By9 = 1.7777777777777777f; // raw 0x3FE38E39 @ 0xF597FC
+            // CVTTSS2SI truncates the floating excess before signed halving.
             const int excess = static_cast<int>(
-                static_cast<float>(renderWidth) -
-                static_cast<float>(renderHeight) * kAspect16By9);
-
+                static_cast<float>(dims->width) -
+                static_cast<float>(dims->height) * kAspect16By9);
             const int halfExcess = excess / 2;
-            const int correction = (-halfExcess * self->width) / renderWidth;
+
+            // A22CE2..A22CEB: NEG; IMUL width; IDIV renderWidth.
+            const int correction = (-halfExcess * self->width) / dims->width;
             self->xOrigin += correction;
         }
     }
