@@ -9,6 +9,7 @@ add_library(re5_split120 STATIC
     src/split_localcoop_120.cpp
     src/split_begin_add_player_120.cpp
     src/split_local_player_activation_120.cpp
+    src/split_local_join_root_state_120.cpp
     src/split_state13_120.cpp
     src/split_story_pause_records_120.cpp
     src/split_story_pause_initializer_120.cpp
@@ -34,6 +35,7 @@ add_library(re5_split120 STATIC
     src/split_dlc_join_input_120.cpp
     src/split_mercs_local_activation_120.cpp
     src/split_mercs_join_input_120.cpp
+    src/split_mercs_join_reset_120.cpp
     src/split_mercs_join_state32_120.cpp
     src/split_mercs_postjoin_finalize_120.cpp
     src/split_session_population_gate_120.cpp
