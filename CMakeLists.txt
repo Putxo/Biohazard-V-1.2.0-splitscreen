@@ -17,6 +17,7 @@ add_library(re5_split120 STATIC
     src/split_a1be00_120.cpp
     src/split_a22c00_120.cpp
     src/split_cursor_120.cpp
+    src/split_cursor_input_120.cpp
     src/split_state_change_120.cpp
     src/split_aspect_correction_120.cpp
     src/split_visibility_guard_120.cpp
