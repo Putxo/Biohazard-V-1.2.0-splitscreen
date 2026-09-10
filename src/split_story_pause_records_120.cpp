@@ -12,8 +12,7 @@ struct StoryPauseRecord120 {
     std::uint8_t _2C[0x30-0x2C];
     std::int32_t splitGeometry; std::int32_t state;
     std::int32_t previousState; std::int32_t selectedRow;
-    std::int32_t optionCount; const std::int32_t* optionIds;
-    std::uint8_t _48[0x58-0x48];
+    std::int32_t optionCount; std::int32_t optionIds[5];
     std::uint8_t substate; std::uint8_t substateAux; std::uint8_t _5A[2];
     float timer; std::int32_t result; void* child;
 };
