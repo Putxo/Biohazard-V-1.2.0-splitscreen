@@ -7,18 +7,27 @@ struct MercsFrontendCompletion120 {
     std::uint8_t complete; // +0x3C
 };
 
-// 0x00A4AE73 -- VERIFIED from the recovered Mercenaries/Reunion frontend
-// state dispatcher. State 0x5C is the terminal frontend state and raises
-// the object's standard completion byte at +0x3C.
+// 0x00A4AE73 -- VERIFIED from direct 1.2.0 disassembly.
+// State 0x5C raises the standard completion byte, but the original routine does
+// one more operation before returning: it calls 0x7B43C0 on the global manager
+// at 0x11B20C4 with routeByte=1 and startSlot=0.
+//
+// Exact tail:
+//   push 0
+//   mov  ecx,[0x11B20C4]
+//   push 1
+//   mov  byte ptr [esi+0x3C],1
+//   call 0x7B43C0
+//
+// Therefore the earlier reconstruction that treated A4AE73 as only a flag
+// write was incomplete. The frontend is marked complete AND its routed UI/input
+// records are reset/re-enabled through the native 7B43C0 helper.
 void MarkMercsFrontendComplete_A4AE73(MercsFrontendCompletion120& self)
 {
     self.complete = 1;
+    // Native side effect: ResetUiRouteRange_7B43C0(*[0x11B20C4], 1, 0).
 }
 
-// The important boundary for the split-screen reconstruction is therefore:
-// local J2 join and final confirmation are fully resolved before +0x3C is
-// raised. Destruction / next game-state selection belongs to the owner of
-// this frontend object, not to A17240/A17280 or the local-join machinery.
 bool MercsFrontendHasCompleted(const MercsFrontendCompletion120& self)
 {
     return self.complete != 0;
