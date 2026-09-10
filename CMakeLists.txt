@@ -29,6 +29,7 @@ add_library(re5_split120 STATIC
     src/split_mercs_frontend_completion_120.cpp
     src/split_ui_route_reset_120.cpp
     src/split_mercs_frontend_owner_120.cpp
+    src/split_event_request_120.cpp
     src/split_render_120.cpp
     src/split_resource_120.cpp
     src/split_resource_geometry_120.cpp
