@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(re5_split120 STATIC
     src/split_localcoop_120.cpp
     src/split_state13_120.cpp
+    src/split_session_slots_120.cpp
     src/split_render_120.cpp
     src/split_resource_120.cpp
     src/split_resource_geometry_120.cpp
