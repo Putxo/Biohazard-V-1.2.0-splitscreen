@@ -27,5 +27,5 @@ VA,provisional_name,status,role,evidence
 0x009E5B0C,FindSplitUiFallbackRecord,Verified,table-driven event lookup,"direct 1.2 disassembly scans 55 records at 0x1121C98 with 24-byte stride and compares eventId at +0x10"
 0x01121C98,SplitUiFallbackTable,Verified,55-entry split UI fallback table,"raw PE table decoded as six int32 fields per record; exact 11 Dev-missing records committed"
 0x007B5C50,SplitUiTransformFamily,Partial,parent coordinate/hit-test routine,"direct disassembly performed through split affine setup and hit-test loop; family contains surrounding non-split state logic"
-0x007B5D60,PrepareSplitAffineState,Disassembled,split affine state precompute,"direct 1.2 block 0x7B5D60..0x7B5F44; references physical dimensions, UI base X/Y, status, splitActive, splitScale, player selector and Full predicate; constants decoded"
+0x007B5D60,ComputeSplitHitTransform,Verified,split affine state precompute,"direct 1.2 audit 0x7B5D60..0x7B5F44; exact aspect>0.9 crop branch, active effectiveWidth=trunc(H*16/9), scaleX/scaleY, offsetY term, player 0/1 0.3/0.7 anchors +360 Y, Full 0.5 override; exact constants decoded from PE"
 0x007B6034,SplitHitTestAffine,Verified,split-aware UI hitbox test,"direct 0x7B6034..0x7B60A8 audit; X'=(baseX+edgeX)*scaleX+offsetX and Y'=(baseY+edgeY)*scaleY+offsetY; exact bounds left<=x<right top<=y<bottom"
