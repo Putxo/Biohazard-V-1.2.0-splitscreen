@@ -12,6 +12,7 @@ add_library(re5_split120 STATIC
     src/split_pregame_two_slot_120.cpp
     src/split_mode_pregame_120.cpp
     src/split_mode_local_route_120.cpp
+    src/split_frontend_mode_selection_120.cpp
     src/split_render_120.cpp
     src/split_resource_120.cpp
     src/split_resource_geometry_120.cpp
