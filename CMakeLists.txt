@@ -13,6 +13,7 @@ add_library(re5_split120 STATIC
     src/split_rebuild_120.cpp
     src/split_a1be00_120.cpp
     src/split_a22c00_120.cpp
+    src/split_cursor_120.cpp
     src/split_ui_primary_120.cpp
     src/split_ui_draw_120.cpp
     src/split_top22_120.cpp
