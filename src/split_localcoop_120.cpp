@@ -78,7 +78,9 @@ struct InputManagerJoinView120 {
     std::uint8_t keyboardMode;
     std::uint8_t _5F1[0x5FC - 0x5F1];
     float joinTimer;
-    std::uint8_t _600[0x61C - 0x600];
+    std::uint8_t _600[0x614 - 0x600];
+    std::int32_t selectedJoinPlayer; // +0x614
+    std::uint8_t _618[0x61C - 0x618];
     std::uint8_t controllerScanArmed;
 };
 
@@ -150,9 +152,6 @@ bool FallbackInputBitGate_79AEA0(InputManagerJoinView120* self)
     return false;
 }
 
-// 0x00716310 — VERIFIED.
-// If system flag 0x1000 is clear, or self+0xE8 is null, local join is allowed.
-// Otherwise native helper 0xA2CF60 decides using the object at self+0xE8.
 extern bool LocalJoinGateObject_A2CF60(void* object);
 bool LocalJoinEnvironmentAllowed_716310(AGame120* self)
 {
@@ -167,9 +166,6 @@ bool LocalJoinEnvironmentAllowed_716310(AGame120* self)
     return LocalJoinGateObject_A2CF60(object);
 }
 
-// 0x00716340 — VERIFIED.
-// Native code tests self+0xD4 first. Otherwise it returns bit7 OR bit6 of the
-// LOW BYTE at root+0x10438 (TEST AL,AL / JS, then SHR AL,6 / AND 1).
 bool LocalJoinBusy_716340(AGame120* self)
 {
     if (*reinterpret_cast<const std::int32_t*>(
@@ -183,52 +179,89 @@ bool LocalJoinBusy_716340(AGame120* self)
     return (low & 0x40u) != 0;
 }
 
-extern bool GlobalJoinGuardsPass();
-extern bool SessionModeAllowsLocalJoin();
-extern bool SessionLocalJoinStateClear();
-extern int  CountActivePlayers_C42B60();
-extern int  CurrentPreferredJoinSlot();
-extern int  FallbackKeyboardDevice();
-extern void InputSetSelectedJoinSlot614(int slot);
-extern void PrepareKeyboardDeviceMapping(int slot, int device);
+extern int CountActivePlayers_C42B60();
+extern void SessionSetPair_C42A50(Session120*, int key, int value);
+extern void InputRoute_7996B0(InputManagerJoinView120*, int value);
 
+// Exact native 0x00723460 gate chain and branch wiring.
+// Names are intentionally address/field based where semantics are still unknown.
 void PollLocalJoin_723460(AGame120* self)
 {
-    if (!GlobalJoinGuardsPass())
+    auto* root = *reinterpret_cast<std::uint8_t**>(0x012340A4);
+
+    if ((*(root + 0x10434) & 0x03u) != 0)
         return;
-    if (!SessionModeAllowsLocalJoin())
+
+    auto* session = *reinterpret_cast<std::uint8_t**>(root + 0x1042C);
+    if (*reinterpret_cast<std::int32_t*>(session + 0x58) != 0)
         return;
-    if (!SessionLocalJoinStateClear())
+
+    auto* global1249C1C = *reinterpret_cast<std::uint8_t**>(0x01249C1C);
+    if (*reinterpret_cast<std::int32_t*>(global1249C1C + 0x48) > 1)
+        return;
+
+    if (*(session + 0x54) != 0)
+        return;
+
+    // 0x11E8804 -> virtual method vtable+0x38 must return zero.
+    auto* gateObj = *reinterpret_cast<std::uint8_t**>(0x011E8804);
+    auto** gateVtable = *reinterpret_cast<void***>(gateObj);
+    using GateFn = int(__thiscall*)(void*);
+    if (reinterpret_cast<GateFn>(gateVtable[0x38 / sizeof(void*)])(gateObj) != 0)
+        return;
+
+    auto flags10438 = *reinterpret_cast<std::uint32_t*>(root + 0x10438);
+    if ((flags10438 & 0x20000000u) != 0)
         return;
     if (!LocalJoinEnvironmentAllowed_716310(self))
         return;
+
+    // Native code keeps this value in EDX across 0x716340 and later requires it
+    // to be non-negative in addition to the 0x700 mask being clear.
+    flags10438 = *reinterpret_cast<std::uint32_t*>(root + 0x10438);
+    if ((flags10438 & 0x700u) != 0)
+        return;
     if (LocalJoinBusy_716340(self))
         return;
+    if (static_cast<std::int32_t>(flags10438) < 0)
+        return;
+
     if (CountActivePlayers_C42B60() >= 2)
         return;
 
-    const int slot = CurrentPreferredJoinSlot();
-    int device = -1;
-    auto* input = reinterpret_cast<InputManagerJoinView120*>(gInputManager_1249C40);
+    auto* playerArrayRoot = *reinterpret_cast<std::uint8_t**>(0x011B2158);
+    const int playerArrayIndex = *reinterpret_cast<std::int32_t*>(playerArrayRoot + 0x20);
+    const int selectedPlayer = *reinterpret_cast<std::int32_t*>(
+        playerArrayRoot + playerArrayIndex * 0x5940 + 0x273C4);
 
-    if (DetectControllerJoin_79ADA0(input, &device)) {
-        InputSetSelectedJoinSlot614(slot);
-        BeginAddPlayer(self, slot, device, false);
+    const int slot = FindJoinableSessionSlot_C42CB0(session);
+    int detectedDevice = -1;
+    auto* input = reinterpret_cast<InputManagerJoinView120*>(
+        *reinterpret_cast<void**>(0x01249C40));
+
+    if (DetectControllerJoin_79ADA0(input, &detectedDevice)) {
+        input->selectedJoinPlayer = selectedPlayer;
+        BeginAddPlayer(self, slot, detectedDevice, false);
         return;
     }
 
-    if (DetectKeyboardJoin_79AE20(input, &device)) {
-        PrepareKeyboardDeviceMapping(slot, device);
-        InputSetSelectedJoinSlot614(slot);
-        BeginAddPlayer(self, slot, device, true);
+    if (DetectKeyboardJoin_79AE20(input, &detectedDevice)) {
+        const int nonPositive = detectedDevice <= 0 ? 1 : 0;
+        SessionSetPair_C42A50(reinterpret_cast<Session120*>(session), selectedPlayer, nonPositive);
+        SessionSetPair_C42A50(reinterpret_cast<Session120*>(session), slot, detectedDevice);
+        input->selectedJoinPlayer = selectedPlayer;
+        BeginAddPlayer(self, slot, detectedDevice, true);
         return;
     }
 
     if (DetectFallbackJoin_79C1E0(input)) {
-        device = FallbackKeyboardDevice();
-        PrepareKeyboardDeviceMapping(slot, device);
-        InputSetSelectedJoinSlot614(slot);
-        BeginAddPlayer(self, slot, device, false);
+        const int preferredDevice = input->preferredDevice;
+        const int nonPositive = preferredDevice <= 0 ? 1 : 0;
+        SessionSetPair_C42A50(reinterpret_cast<Session120*>(session), selectedPlayer, preferredDevice);
+        SessionSetPair_C42A50(reinterpret_cast<Session120*>(session), slot, nonPositive);
+        input->selectedJoinPlayer = slot;
+        InputRoute_7996B0(input, 0);
+        BeginAddPlayer(self, slot, nonPositive, false);
     }
 }
 
