@@ -10,7 +10,10 @@ add_library(re5_split120 STATIC
     src/split_begin_add_player_120.cpp
     src/split_local_player_activation_120.cpp
     src/split_local_join_root_state_120.cpp
+    src/split_root_flag_helpers_120.cpp
     src/split_player_input_routing_120.cpp
+    src/split_gameplay_keyboard_owner_120.cpp
+    src/split_ui_input_base_120.cpp
     src/split_state13_120.cpp
     src/split_story_pause_records_120.cpp
     src/split_story_pause_initializer_120.cpp
@@ -59,6 +62,7 @@ add_library(re5_split120 STATIC
     src/split_resource_geometry_120.cpp
     src/split_resource_geometry_blocks_120.cpp
     src/split_resource_geometry_more_120.cpp
+    src/split_resource_geometry_completion_120.cpp
     src/split_resource728_geometry_120.cpp
     src/split_rebuild_120.cpp
     src/split_effective_full_extra_120.cpp
