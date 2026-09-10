@@ -24,6 +24,7 @@ add_library(re5_split120 STATIC
     src/split_aspect_correction_120.cpp
     src/split_aspect_input_120.cpp
     src/split_aspect_draw_wrapper_120.cpp
+    src/split_fullscreen_option_120.cpp
     src/split_visibility_guard_120.cpp
     src/player_state_accessor_120.cpp
     src/split_table_fallback_120.cpp
