@@ -25,6 +25,7 @@ add_library(re5_split120 STATIC
     src/split_session_population_gate_120.cpp
     src/split_mercs_join_completion_gate_120.cpp
     src/split_mercs_state3_refresh_120.cpp
+    src/split_frontend_transition_120.cpp
     src/split_render_120.cpp
     src/split_resource_120.cpp
     src/split_resource_geometry_120.cpp
