@@ -12,6 +12,7 @@ add_library(re5_split120 STATIC
     src/split_local_join_root_state_120.cpp
     src/split_root_flag_helpers_120.cpp
     src/split_agame_state10_local_transition_120.cpp
+    src/split_local_transition_helpers_120.cpp
     src/split_index1_flag_routes_120.cpp
     src/split_local_join_bit800_refresh_120.cpp
     src/split_player_input_routing_120.cpp
