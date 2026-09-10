@@ -16,17 +16,17 @@ bool IsMercsOrReunionLocalSplit_C42EC0(const Session120* session)
 }
 
 // Split-specific portion of 0xBF5050 setup, exact branch 0xBF52E5..0xBF5334.
-// Native has already marked the current slot available and in slotMode=2.
-// When the local-split predicate is true, a non-primary eligible slot with a
-// valid secondary binding at session+0x658 is promoted to active/local mode 0
-// and receives that binding through C42A50.
+// At this point native EBP is still zero (it is not loaded with session+0x5DC
+// until the later 0xBF546A primary-slot tail). Therefore the exact native
+// guard here is `slot != 0`, NOT `slot != primarySlot`.
+// If local split is selected and session+0x658 is valid, an eligible nonzero
+// slot is promoted to active/local mode 0 and receives the secondary binding.
 void PromoteMercsSecondaryLocalSlot_BF52E5(Session120* session,
                                            int slot,
-                                           int primarySlot,
                                            int secondaryDevice)
 {
     if (!IsMercsOrReunionLocalSplit_C42EC0(session)) return;
-    if (slot == primarySlot) return;
+    if (slot == 0) return;
     if (secondaryDevice < 0) return;
 
     auto* b = Bytes(session);
