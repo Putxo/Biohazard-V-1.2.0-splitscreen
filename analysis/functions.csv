@@ -23,5 +23,7 @@ VA,provisional_name,status,role,evidence
 0x009F2280,TransientSplitVisibilityGuard,Partial,parent widget/update family,"split-specific type-8 visibility branch isolated and verified at 0x9F2A80..0x9F2A9C"
 0x009F2A80,ApplyTransientVisibilityGuard,Verified,transient split visibility guard,"direct disassembly: type==8 and +0x3085==0 clears widget+0x08; transient nonzero skips clear"
 0x00CEE1B0,PlayerStateAccessor,Verified,transversal local player state accessor,"direct 0xCEE1B0..0xCEE1CD disassembly; RET 4; selector byte zero + transient flag returns 1, otherwise returns self+0x5C"
-0x009E5870,SplitUiTableFallback,Partial,table-driven UI dispatcher/fallback,"full native dispatcher disassembled; Stage37 comparison proves 11 1.2 IDs absent from Dev switch; direct 1.2 C reconstruction still in progress"
+0x009E5870,SplitUiTableFallback,Partial,table-driven UI dispatcher/fallback,"full native dispatcher disassembled; direct table-driven block and 55-entry table decoded; higher-level draw helper signatures still being refined"
+0x009E5B0C,FindSplitUiFallbackRecord,Verified,table-driven event lookup,"direct 1.2 disassembly scans 55 records at 0x1121C98 with 24-byte stride and compares eventId at +0x10"
+0x01121C98,SplitUiFallbackTable,Verified,55-entry split UI fallback table,"raw PE table decoded as six int32 fields per record; exact 11 Dev-missing records committed"
 0x007B5C50,SplitUiTransformFamily,Discovered,affine UI coordinate transform,"Stage38; UI base X/Y + scale/offset"
