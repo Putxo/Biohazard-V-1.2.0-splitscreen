@@ -4,11 +4,14 @@ struct AGameRootState120 { std::uint8_t _00[5]; std::uint8_t state5; std::uint8_
 struct GameRoot120;
 extern GameRoot120* gRoot_12340A4;
 extern void OrRootStateFlags_726120(GameRoot120*, std::uint32_t);
+extern void UpdateAddPlayerState13_725B20(AGameRootState120*);
+extern void UpdateLocalJoinShared_71B0E0(AGameRootState120*);
+extern void UpdateLocalJoinTail_71AC10(AGameRootState120*, int);
 
 // 0x0071A4C0..0x0071A4FA -- VERIFIED.
-// Called by aGame state-0 dispatch (0x725E20 -> 0x725E33). Native performs a
-// two-step substate transition, calls synchronized helper 0x726120 with 0x10,
-// then moves the owning aGame object to state 5.
+// Called by the aGame outer state-13 handler. Native performs a two-step
+// substate transition, calls synchronized helper 0x726120 with 0x10, then
+// moves the owning aGame object's state byte +5 to 5.
 void EnableLocalJoinRootState_71A4C0(AGameRootState120* self) {
     const std::uint8_t sub = self->substate6;
     if (sub == 0) {
@@ -24,8 +27,26 @@ void EnableLocalJoinRootState_71A4C0(AGameRootState120* self) {
     self->substate6 = 0;
 }
 
-// 0x00725E20 state table: state0 -> 0x71A4C0, state5 -> 0x725B20.
-bool AGameDispatchesLocalJoinOrAddPlayer_725E20(std::uint8_t state) {
-    return state == 0 || state == 5;
+// 0x00725E20..0x00725E60 -- VERIFIED.
+// Outer aGame state 13 (0x725E80 switch entry 13 -> 0x725E20). Its +5 state
+// dispatch table is exact:
+//   0 -> 0x71A4C0 then shared tail
+//   1..4 -> shared tail only
+//   5 -> 0x725B20 (native Add Player machine) then shared tail
+// Values >5 also take the shared tail.
+void UpdateLocalJoinOuterState13_725E20(AGameRootState120* self) {
+    switch (self->state5) {
+    case 0:
+        EnableLocalJoinRootState_71A4C0(self);
+        break;
+    case 5:
+        UpdateAddPlayerState13_725B20(self);
+        break;
+    default:
+        break;
+    }
+    UpdateLocalJoinShared_71B0E0(self);
+    UpdateLocalJoinTail_71AC10(self, 0);
 }
-}
+
+} // namespace re5::split120
