@@ -10,10 +10,13 @@ add_library(re5_split120 STATIC
     src/split_begin_add_player_120.cpp
     src/split_local_player_activation_120.cpp
     src/split_local_join_root_state_120.cpp
+    src/split_player_input_routing_120.cpp
     src/split_state13_120.cpp
     src/split_story_pause_records_120.cpp
     src/split_story_pause_initializer_120.cpp
     src/split_story_pause_option05_120.cpp
+    src/split_story_pause_option05_update_120.cpp
+    src/split_story_pause_shared_owner_routes_120.cpp
     src/split_story_pause_state8_120.cpp
     src/split_story_pause_selector_120.cpp
     src/split_story_pause_dispatch_120.cpp
@@ -23,9 +26,11 @@ add_library(re5_split120 STATIC
     src/split_trial_split_120.cpp
     src/split_trial_join_device_120.cpp
     src/split_session_slots_120.cpp
+    src/split_session_local_binding_reset_120.cpp
     src/split_pregame_two_slot_120.cpp
     src/split_mode_pregame_120.cpp
     src/split_mode_local_route_120.cpp
+    src/split_global_local_mode_consumers_120.cpp
     src/split_frontend_mode_selection_120.cpp
     src/split_dlc_frontend_120.cpp
     src/split_dlc_row_semantics_120.cpp
@@ -38,6 +43,9 @@ add_library(re5_split120 STATIC
     src/split_mercs_join_reset_120.cpp
     src/split_mercs_join_state32_120.cpp
     src/split_mercs_postjoin_finalize_120.cpp
+    src/split_mercs_player_device_owner_120.cpp
+    src/split_mercs_frontend_player_init_120.cpp
+    src/split_mercs_mode_consumers_120.cpp
     src/split_session_population_gate_120.cpp
     src/split_mercs_join_completion_gate_120.cpp
     src/split_mercs_state3_refresh_120.cpp
@@ -53,6 +61,7 @@ add_library(re5_split120 STATIC
     src/split_resource_geometry_more_120.cpp
     src/split_resource728_geometry_120.cpp
     src/split_rebuild_120.cpp
+    src/split_effective_full_extra_120.cpp
     src/split_a1be00_120.cpp
     src/split_a22c00_120.cpp
     src/split_cursor_120.cpp
