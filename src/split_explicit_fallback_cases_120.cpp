@@ -3,7 +3,7 @@
 namespace re5::split120 {
 
 // Exact explicit-event portion of 0x009E5870, before the generic
-// 55-record table fallback.  Argument ordering follows the native thiscall:
+// 55-record table fallback. Argument ordering follows the native thiscall:
 //   (arg1, x, y, arg4, eventId, arg6, arg7)
 // and the dispatcher returns true when the event was consumed.
 
@@ -19,9 +19,9 @@ extern bool DrawSplitAwareDispatch_9E5DE0(void* self, int arg1, int x, int y,
                                          int arg4, int resourceId,
                                          int arg6, int arg7);
 
-static bool DrawThreeMeasuredGlyphs(void* self, int arg1, int x, int arg4,
-                                    int eventId, int arg6, int arg7,
-                                    bool fourGlyphVariant)
+static bool DrawMeasuredSequence_112_118(void* self, int arg1, int x, int arg4,
+                                        int eventId, int arg6, int arg7,
+                                        bool include97C)
 {
     int cursor = x + DrawHeaderAdvance_9E3D40(self, arg1, eventId, arg7);
 
@@ -36,7 +36,7 @@ static bool DrawThreeMeasuredGlyphs(void* self, int arg1, int x, int arg4,
     extent = DrawShiftedByMeasuredExtent_9E3E70(
         self, arg1, cursor, 0x279, arg4, 0x97D, arg6, -1);
 
-    if (fourGlyphVariant) {
+    if (include97C) {
         cursor += -2 - extent;
         DrawShiftedByMeasuredExtent_9E3E70(
             self, arg1, cursor, 0x279, arg4, 0x97C, arg6, -1);
@@ -50,14 +50,16 @@ bool DrawExplicitSplitFallbackCase_9E58A6(void* self,
                                            int arg4, int eventId,
                                            int arg6, int arg7)
 {
+    (void)y; // explicit native cases replace Y with fixed constants below.
+
     switch (eventId) {
     case 0x112:
-        return DrawThreeMeasuredGlyphs(self, arg1, x, arg4,
-                                       0x112, arg6, arg7, true);
+        return DrawMeasuredSequence_112_118(self, arg1, x, arg4,
+                                           0x112, arg6, arg7, true);
 
     case 0x118:
-        return DrawThreeMeasuredGlyphs(self, arg1, x, arg4,
-                                       0x118, arg6, arg7, false);
+        return DrawMeasuredSequence_112_118(self, arg1, x, arg4,
+                                           0x118, arg6, arg7, false);
 
     case 0x115:
         DrawSplitAwareDispatch_9E5DE0(self, arg1, 0x388, 0x279,
@@ -68,13 +70,18 @@ bool DrawExplicitSplitFallbackCase_9E58A6(void* self,
 
     case 0x14D: {
         int cursor = x + DrawHeaderAdvance_9E3D40(self, arg1, 0x14D, arg7);
+
         int extent = DrawShiftedByMeasuredExtent_9E3E70(
             self, arg1, cursor, 0x279, arg4, 0x14E, arg6, -1);
         cursor += -2 - extent;
-        // Native code shares the tail used by the 0x118 sequence here.
-        DrawShiftedByMeasuredExtent_9E3E70(
+
+        // 0x9E5AC3 jumps into the shared 0x9E593E tail: 0x97E then 0x97D.
+        extent = DrawShiftedByMeasuredExtent_9E3E70(
             self, arg1, cursor, 0x279, arg4, 0x97E, arg6, -1);
-        // Remaining 0x97D tail is reached through the same native shared block.
+        cursor += -2 - extent;
+
+        DrawShiftedByMeasuredExtent_9E3E70(
+            self, arg1, cursor, 0x279, arg4, 0x97D, arg6, -1);
         return true;
     }
 
