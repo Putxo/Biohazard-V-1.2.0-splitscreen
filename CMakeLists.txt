@@ -11,6 +11,7 @@ add_library(re5_split120 STATIC
     src/split_local_player_activation_120.cpp
     src/split_state13_120.cpp
     src/split_story_pause_records_120.cpp
+    src/split_story_pause_initializer_120.cpp
     src/split_story_pause_option05_120.cpp
     src/split_story_pause_state8_120.cpp
     src/split_story_pause_selector_120.cpp
