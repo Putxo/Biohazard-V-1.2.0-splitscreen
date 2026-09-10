@@ -15,6 +15,7 @@ add_library(re5_split120 STATIC
     src/split_frontend_mode_selection_120.cpp
     src/split_dlc_frontend_120.cpp
     src/split_dlc_row_semantics_120.cpp
+    src/split_dlc_postconfirm_120.cpp
     src/split_render_120.cpp
     src/split_resource_120.cpp
     src/split_resource_geometry_120.cpp
