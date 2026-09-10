@@ -22,6 +22,7 @@ add_library(re5_split120 STATIC
     src/split_table_fallback_120.cpp
     src/split_table_draw_120.cpp
     src/split_explicit_fallback_cases_120.cpp
+    src/split_ui_dispatch_120.cpp
     src/split_transform_120.cpp
     src/split_hit_test_120.cpp
     src/split_panel_transform_120.cpp
