@@ -36,7 +36,7 @@ struct SplitRenderState120 {
 bool IsFullSplitEffective(const SplitRenderState120* self);
 void SetLocalPlayerActive(bool active, int slot, int device);
 void BeginAddPlayer(AGame120* self, int slot, int device, bool sourceIsKeyboard);
-void PollLocalJoin_723460(AGame120* self);
+void __thiscall PollLocalJoin_723460(AGame120* self);
 void RecalculateSplitGeometry_76C0C0(SplitRenderState120* self);
 void UpdateSplitActivationAndResource_76C1F0(SplitRenderState120* self);
 void ReleaseSecondarySplitResource(SplitRenderState120* self);
