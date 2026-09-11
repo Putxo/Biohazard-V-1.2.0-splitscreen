@@ -4,13 +4,6 @@
 
 namespace re5::split120 {
 
-namespace {
-
-template <class T>
-static inline T& field(void* p, std::size_t off) {
-    return *reinterpret_cast<T*>(reinterpret_cast<std::uint8_t*>(p) + off);
-}
-
 extern int QueryGameStatus_C42D90();
 extern SplitRenderState120* GetSplitState_123457C();
 extern int FullCoordTransform_76A460(int x);
@@ -19,6 +12,13 @@ extern void DrawUiItem_9E3E70(void* self, int width, int x, int y,
                               int* localValue, int stringOrId,
                               int height, int minusOne);
 extern std::uint16_t LookupUiWord_112C128(int index);
+
+namespace {
+
+template <class T>
+static inline T& field(void* p, std::size_t off) {
+    return *reinterpret_cast<T*>(reinterpret_cast<std::uint8_t*>(p) + off);
+}
 
 static inline int div10_trunc(int v) { return v / 10; }
 static inline int div8_trunc(int v)  { return v / 8; }
