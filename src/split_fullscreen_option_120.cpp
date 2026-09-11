@@ -13,9 +13,17 @@ static_assert(__builtin_offsetof(SystemSettingsOwner120,menuSelection)==0x104D0,
 static_assert(__builtin_offsetof(SystemSettingsOwner120,splitModeQuality)==0x10540,"SplitModeQuality backing field");
 
 struct MenuEnum120;
+struct MenuEnumLookupResult120 {
+    std::int32_t key;
+    std::int32_t value;
+};
+static_assert(sizeof(MenuEnumLookupResult120)==8,"0x424EF0 pair size");
+
 extern std::uint8_t* gRoot_12340A4;
 extern SplitRenderState120* gSplitRenderState_123457C;
 extern void* gSettingsRegistry_12337DC;
+extern const MenuEnumLookupResult120* __thiscall MenuEnumLookup_424EF0(MenuEnum120* menu,int selectedIndex);
+extern void __thiscall MenuEnumSet_424F00(MenuEnum120* menu,int value);
 extern int __thiscall MenuEnumCurrent_424F30(MenuEnum120* menu);
 extern void __thiscall RebuildRuntimeSplitUi_76CC10(SplitRenderState120* split);
 extern int __thiscall QueryGameStatus_C42D90(void* session);
@@ -39,9 +47,6 @@ struct NativeSettingDescriptor120 {
 static_assert(sizeof(NativeSettingDescriptor120)==0x28,"native settings descriptor size");
 static_assert(__builtin_offsetof(NativeSettingDescriptor120,setter)==0x14,"native setter offset");
 
-// Stack layout at 0x7816DB..0x78171E is exactly:
-//   push 0,0,0,enumTable ; copy descriptor by value ; push 2 ; ECX=registry.
-// This declaration mirrors that thiscall stack order.
 extern void __thiscall RegisterEnumSetting_425960(void* registry,
                                                   int valueCount,
                                                   NativeSettingDescriptor120 descriptor,
@@ -76,7 +81,6 @@ int __thiscall GetSplitModeQuality_77EAD0(const SystemSettingsOwner120* self){re
 void __thiscall SetSplitModeQuality_77EAE0(SystemSettingsOwner120* self,int value){self->splitModeQuality=value;}
 
 // 0x00781695..0x0078171E -- exact SplitModeQuality enum registration.
-// Parent 0x7813C0 establishes kind=6, flags=0x80, zero=0 and owner=EDI.
 void RegisterSplitModeQuality_781695(SystemSettingsOwner120* self)
 {
     NativeSettingDescriptor120 d{};
@@ -103,19 +107,47 @@ void LoadFullSplitOption_780EC0(SystemSettingsOwner120* root){
     gSplitRenderState_123457C->fullScreenSplitMode=(root->menuSelection[10]==1)?1u:0u;
 }
 
-// 0x00781210..0x00781274: slot-10 live apply block. In the parent routine this
-// block is reached only after 0x424F30 differs from the cached value and the
-// parent has first applied that value through 0x424F00.
-void ApplyFullSplitOptionSlot10_781210(MenuEnum120* option){
-    const int selected=MenuEnumCurrent_424F30(option);
-    gSplitRenderState_123457C->fullScreenSplitMode=(selected==1)?1u:0u;
+// 0x00781210..0x00781274 -- exact SplitModeQuality live-apply switch block.
+// Native registers:
+//   EBX = SystemSettingsOwner120*, EDI = setting slot (10 here),
+//   ESI = MenuEnum120*.
+// The original does NOT merely read 0x424F30: it resolves the cached menu
+// index through 0x424EF0, compares its +4 value with the current enum value,
+// commits through 0x424F00 when different, re-reads through 0x424F30, updates
+// split+0x3084, and rebuilds runtime split UI only while session status == 1.
+// Returns true here only to expose whether the native block took its change path;
+// the original code is an inline switch case and falls through to 0x7812A6.
+bool ApplyFullSplitOptionSlot10_781210(SystemSettingsOwner120* settings,
+                                       int slotIndex,
+                                       MenuEnum120* option)
+{
+    const MenuEnumLookupResult120* pair=
+        MenuEnumLookup_424EF0(option,settings->menuSelection[slotIndex]);
+    const int targetValue=pair->value;
+
+    if(MenuEnumCurrent_424F30(option)==targetValue)
+        return false; // 0x781231 -> 0x7812AB
+
+    MenuEnumSet_424F00(option,targetValue);
+
+    const int committed=MenuEnumCurrent_424F30(option);
+    gSplitRenderState_123457C->fullScreenSplitMode=(committed==1)?1u:0u;
+
     if(QueryGameStatus_C42D90(Session())==1)
         RebuildRuntimeSplitUi_76CC10(gSplitRenderState_123457C);
+
+    return true;
+}
+
+// Convenience entry matching the identified native slot. This does not replace
+// the exact block above; it makes the slot-10 identity explicit to callers.
+bool ApplyFullSplitOptionSlot10_781210(SystemSettingsOwner120* settings,
+                                       MenuEnum120* option)
+{
+    return ApplyFullSplitOptionSlot10_781210(settings,10,option);
 }
 
 // 0x00782D72..0x00782DB1 -- exact serializer descriptor for +0x10540.
-// Parent 0x782C50 establishes EBP=6 and ESI=0. Unlike the enum-registration
-// descriptor, +0x0C is a direct field pointer and +0x14 is zero.
 void SerializeSplitModeQuality_782D72(SystemSettingsOwner120* self,void* serializer)
 {
     NativeSettingDescriptor120 d{};
@@ -137,7 +169,7 @@ void SerializeSplitModeQuality_782D72(SystemSettingsOwner120* self,void* seriali
 //   setting slot   10, cached at self+0x104F8
 //   backing field  self+0x10540
 //   runtime flag   split+0x3084
-// The localized visible label (Spanish builds display the localized menu text)
-// comes from game language resources rather than the internal ASCII setting key.
+// The localized visible label comes from game language resources rather than
+// the internal ASCII setting key.
 
 } // namespace re5::split120
