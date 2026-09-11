@@ -32,9 +32,10 @@ extern std::uint8_t* gInput_1249C40;
 extern void* gSplitState_123457C;
 extern void __thiscall SetSplitPlayerFlag_76A140(void* split,int value,int force);
 
+static inline SessionSlotState120* S(void* p){return static_cast<SessionSlotState120*>(p);}
+
 // 0x00C43A00..0x00C43BA1 -- exact local/session initialization facts used by
-// J1/J2 routing. This is a thiscall with no preferred-device stack argument:
-// native reads InputManager+0x5D8 directly.
+// J1/J2 routing. This is a thiscall with no preferred-device stack argument.
 void __thiscall InitLocalCoopSessionSlots_C43A00(SessionSlotState120* s)
 {
     s->availableMask=0x3;
@@ -64,10 +65,12 @@ void __thiscall InitLocalCoopSessionSlots_C43A00(SessionSlotState120* s)
 void SetSessionSlotModeView_C42A30(SessionSlotState120* s,int slot,int mode){SessionSetSlotMode_C42A30(s,slot,mode);}
 void SetSessionSlotDeviceView_C42A50(SessionSlotState120* s,int slot,int device){SessionSetDevice_C42A50(s,slot,device);}
 
-// 0x00C42A70 / A90 / AB0 -- exact thiscall relationship setters, ret 8.
-void __thiscall SetSessionLocalPair_C42A70(SessionSlotState120* s,int slot,int value){if(static_cast<unsigned>(slot)<=3u)s->localPair[slot]=value;}
-void __thiscall SetSessionPartnerPair_C42A90(SessionSlotState120* s,int slot,int value){if(static_cast<unsigned>(slot)<=3u)s->partnerPair[slot]=value;}
-void __thiscall SetSessionAuxPair_C42AB0(SessionSlotState120* s,int slot,int value){if(static_cast<unsigned>(slot)<=3u)s->auxPair[slot]=value;}
+// 0x00C42A70 / A90 / AB0 -- exact native thiscall setters, RET 8.
+// Use opaque ECX in the external ABI so all decomp units refer to the same
+// native symbol instead of creating artificial C++ overloads by view type.
+void __thiscall SetSessionLocalPair_C42A70(void* session,int slot,int value){auto*s=S(session);if(static_cast<unsigned>(slot)<=3u)s->localPair[slot]=value;}
+void __thiscall SetSessionPartnerPair_C42A90(void* session,int slot,int value){auto*s=S(session);if(static_cast<unsigned>(slot)<=3u)s->partnerPair[slot]=value;}
+void __thiscall SetSessionAuxPair_C42AB0(void* session,int slot,int value){auto*s=S(session);if(static_cast<unsigned>(slot)<=3u)s->auxPair[slot]=value;}
 
 static int Pop4(std::uint32_t v){v&=0xFu;return int(v&1u?1:0)+int(v&2u?1:0)+int(v&4u?1:0)+int(v&8u?1:0);}
 // 0x00C42B30 / B60 -- exact ECX-only thiscall counters.
@@ -85,8 +88,7 @@ bool __thiscall IsMode2Slot_C42BF0(const SessionSlotState120*s,int slot){return 
 // 0x00C42C20..C42C5D -- exact thiscall, ret 4.
 int __thiscall FindLocalSlotForDevice_C42C20(const SessionSlotState120*s,int device){for(int i=0;i<4;++i)if((s->availableMask&(1u<<i))&&s->slotMode[i]==0&&s->device[i]==device)return i;return -1;}
 
-// 0x00C42C60..C42CA9 -- ECX-only thiscall. Prefer first available mode0;
-// otherwise first unavailable slot; native falls back to 0 if all are available.
+// 0x00C42C60..C42CA9 -- ECX-only thiscall.
 int __thiscall FindLocalOrFreeSlot_C42C60(const SessionSlotState120*s){for(int i=0;i<4;++i)if((s->availableMask&(1u<<i))&&s->slotMode[i]==0)return i;for(int i=0;i<4;++i)if((s->availableMask&(1u<<i))==0)return i;return 0;}
 
 // 0x00C42CB0..C42CE2 -- ECX-only thiscall.
