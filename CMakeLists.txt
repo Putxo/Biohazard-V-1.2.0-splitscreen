@@ -149,7 +149,10 @@ if(RE5_FREESTANDING_CROSS)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-    target_compile_options(re5_split120 PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(re5_split120 PRIVATE
+        -Wall -Wextra -Wpedantic
+        -include ${CMAKE_CURRENT_SOURCE_DIR}/include/re5/native_abi_audit_120.hpp
+    )
 endif()
 
 set_target_properties(re5_split120 PROPERTIES
