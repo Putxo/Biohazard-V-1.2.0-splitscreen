@@ -4,7 +4,7 @@ namespace re5::split120 {
 
 extern std::uint8_t* gRoot_12340A4;
 extern std::uint8_t* gDisplay_12345D4;
-extern int __thiscall GetRuntimeStatus_C42D90(void* session);
+extern int __thiscall QueryGameStatus_C42D90(void* session);
 extern void* NativeAlignedAlloc_11AF294(std::uint32_t bytes, std::uint32_t alignment);
 extern SplitResource120* ConstructSplitResource_B8D6A0(void* storage);
 extern void RegisterSplitResource_428B80(int id, SplitResource120* resource);
@@ -20,7 +20,7 @@ void UpdateSplitActivationAndResource_76C1F0(SplitRenderState120* self)
     const float aspect=static_cast<float>(height)/static_cast<float>(width);
     self->splitActive=0;
     if(aspect>=0.5625f)return;
-    if(GetRuntimeStatus_C42D90(Session())==7&&aspect>=0.4250000119f)return;
+    if(QueryGameStatus_C42D90(Session())==7&&aspect>=0.4250000119f)return;
     self->splitActive=1;
     if(self->secondarySplitResource!=nullptr)return;
     void* storage=NativeAlignedAlloc_11AF294(0x230,0x10);
