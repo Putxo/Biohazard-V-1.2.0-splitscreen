@@ -7,10 +7,6 @@ extern void* gUiInput_11B20C4;
 extern std::uint32_t __thiscall OwnerPressedA_79B340(std::uint8_t*,int);
 extern std::uint32_t __thiscall OwnerPressedB_79B530(std::uint8_t*,int);
 extern int __thiscall TranslateInputCommand_7B6E10(void*,int);
-extern bool __thiscall UiRoute5620_7B5620(void*,int,int,int);
-extern bool __thiscall UiRoute5750_7B5750(void*,int,int,int,int);
-extern void __thiscall UiRoute43C0_7B43C0(void*,int,int);
-extern void __thiscall UiCommand4370_7B4370(void*,int,int);
 extern bool __thiscall InputCommand_799B90(std::uint8_t*,int,int);
 
 struct GameplayActor120 { std::uint8_t _0000[0x2D9C]; std::uint8_t playerNo; };

@@ -11,7 +11,6 @@ struct AspectDrawLayout120 {
 };
 
 extern int MeasureHeader_9E3D40(void* self, int resourceId, int arg6, int sentinel);
-extern int QueryGameStatus_C42D90();
 extern SplitRenderState120* gSplitRenderState_123457C;
 struct RenderDimensions120 { std::uint8_t _00[0x50]; std::int32_t width; std::int32_t height; };
 extern RenderDimensions120* gRenderDimensions_12345D4;

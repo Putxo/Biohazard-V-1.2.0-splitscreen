@@ -3,10 +3,6 @@ namespace re5::split120 {
 struct PauseOwnerView120 { std::uint8_t _00[0x34]; std::int32_t playerIndex; };
 extern std::uint8_t* gInput_1249C40;
 extern void* gUiInput_11B20C4;
-extern bool __thiscall UiRoute5750_7B5750(void*,int,int,int,int);
-extern bool __thiscall UiRoute5620_7B5620(void*,int,int,int);
-extern int __thiscall UiSelectionStep_7B5900(void*,int,int,int,int,int);
-extern int __thiscall UiGetCursor_7B52A0(void*,int);
 static inline bool Own(const PauseOwnerView120* s){return s->playerIndex==*reinterpret_cast<std::int32_t*>(gInput_1249C40+0x614);}
 // Exact InputManager+0x614 ownership gates from shared Story pause option families.
 bool OwnerRoute7_A29DAC(const PauseOwnerView120*s){return Own(s)&&UiRoute5750_7B5750(gUiInput_11B20C4,0,7,0,0);}

@@ -10,7 +10,6 @@ struct RenderDimensions120Exact {
     std::int32_t height;
 };
 
-extern int QueryGameStatus_C42D90();
 extern RenderDimensions120Exact* gRenderDimensions_12345D4;
 
 // 0x0076C2A0..0x0076C34C -- VERIFIED from direct disassembly of the unpacked

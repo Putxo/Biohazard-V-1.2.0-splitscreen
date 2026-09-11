@@ -26,7 +26,6 @@ extern const MenuEnumLookupResult120* __thiscall MenuEnumLookup_424EF0(MenuEnum1
 extern void __thiscall MenuEnumSet_424F00(MenuEnum120* menu,int value);
 extern int __thiscall MenuEnumCurrent_424F30(MenuEnum120* menu);
 extern void __thiscall RebuildRuntimeSplitUi_76CC10(SplitRenderState120* split);
-extern int __thiscall QueryGameStatus_C42D90(void* session);
 static inline void* Session(){return *reinterpret_cast<void**>(gRoot_12340A4+0x1042C);}
 
 // Exact 0x28-byte descriptor shape copied by the native compiler at both

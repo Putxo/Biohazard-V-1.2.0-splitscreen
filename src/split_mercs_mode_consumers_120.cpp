@@ -7,7 +7,6 @@ extern std::uint8_t* gInput_1249C40;
 extern void* gUiInput_11B20C4;
 extern void* gInputService_11B1DD8;
 extern bool UiDeviceReady_7F1390(void*, int, int);
-extern bool UiRoute5620_7B5620(void*, int, int, int);
 extern bool InputRoute_799B90(std::uint8_t*, int, int);
 extern void RefreshMercsPlayerDevice_A43360(void*, int);
 extern void RenderMercsLocalDualPlayer_A44BF0(void*);

@@ -6,7 +6,6 @@ extern std::uint8_t* gInput_1249C40;
 extern std::uint8_t* gProfileState_11B2158;
 extern std::uint8_t* gRoot_12340A4;
 
-extern bool __thiscall IsNativeLocalCoopActive_C43BB0(const void* session);
 extern int __thiscall TranslateInputCommand_7B6E10(void* profile,int command);
 extern bool __thiscall QueryInputA_799FB0(void* input,int command);
 extern bool __thiscall QueryInputB_79A090(void* input,int command);

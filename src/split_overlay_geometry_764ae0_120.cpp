@@ -3,8 +3,6 @@ namespace re5::split120 {
 struct SplitOverlayState120{std::uint8_t _0[0x3064];std::uint8_t splitActive;std::uint8_t _3065[0x3070-0x3065];float splitScale;float splitParam;float splitScale2;float splitOffset;};
 struct OverlayMetrics120{float primaryScale;float itemHeight;float logicalWidth;float uniformScale;int horizontalBias;};
 extern bool IsFullSplitEffective(const void*);
-extern int SplitCoordTransform_76A420(void*,int);
-extern int FullCoordTransform_76A460(void*,int);
 extern int PanelTransform_76C2A0(void*,int);
 static inline int truncf(float v){return static_cast<int>(v);}
 OverlayMetrics120 PrepareLocalOverlaySplitMetrics_764BB1(const SplitOverlayState120* s,int status,int profileMode,bool frontendWideLayout,int physicalW,int physicalH)

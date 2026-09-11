@@ -18,7 +18,6 @@ struct ResourceUiNode120 {
 };
 
 extern SplitRenderState120* gSplitRenderState_123457C;
-extern int QueryGameStatus_C42D90();
 extern void RefreshResourceNode_CD8160(ResourceUiNode120* node);
 
 // 0x009EF000..0x009EF092 -- verified split-aware row application.

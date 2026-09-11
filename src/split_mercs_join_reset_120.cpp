@@ -10,7 +10,6 @@ struct MercsJoinResetView120 {
 extern std::uint8_t* gRoot_12340A4;
 extern std::uint8_t* gInput_1249C40;
 extern std::uint8_t* gLocalJoinOwner_11B1DD8;
-extern void SessionSetDevice_C42A50(void* session, int slot, int device);
 extern void RefreshLocalJoinOwner_7F1280(void* owner);
 // 0x00A44274..0x00A44306 -- VERIFIED Mercenaries/Reunion local-join cleanup.
 // Rebinds slot0 to the preferred input, clears slot1, and invalidates the

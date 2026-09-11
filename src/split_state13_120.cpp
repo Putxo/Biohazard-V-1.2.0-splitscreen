@@ -12,7 +12,6 @@ extern bool State13Ready_71DF70();
 extern void __thiscall ClearRootStateFlags_715A30(void* root,std::uint32_t mask);
 extern void __thiscall OrRootStateFlags_726120(void* root,std::uint32_t mask);
 extern void __thiscall ResetJoinTransition_723870(AGame120* self,int value);
-extern void __thiscall SetLocalPlayerActive_716720(void* context,bool active,int slot,int device);
 extern void __thiscall BindPlayerToUi_7B8370(void* ui,int slot,int device);
 extern void __thiscall SetJoinUiSelection_7F12C0(void* obj,int value);
 extern void __thiscall RefreshJoinUi_7B7FC0(void* ui);

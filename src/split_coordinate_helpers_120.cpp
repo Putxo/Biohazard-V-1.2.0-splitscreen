@@ -9,7 +9,6 @@ struct SplitCoordinateState120 {
 };
 struct GameRoot120;
 extern GameRoot120* gRoot_12340A4;
-extern int QueryGameStatus_C42D90(void* session);
 extern void* RootSession_1042C(GameRoot120*);
 // These two CRT helpers preserve the exact native float->double->x87->int
 // rounding path used at 0x76A420/460. The reconstruction intentionally keeps

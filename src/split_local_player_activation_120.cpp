@@ -1,7 +1,5 @@
 #include <cstdint>
 namespace re5::split120 {
-extern void __thiscall SessionSetSlotMode_C42A30(void*,int,int);
-extern void __thiscall SessionSetDevice_C42A50(void*,int,int);
 extern void __thiscall RefreshPlayerDevice_7E62F0(void*,int);
 extern void __thiscall SetEventRequest_7F1610(void*,int,int);
 

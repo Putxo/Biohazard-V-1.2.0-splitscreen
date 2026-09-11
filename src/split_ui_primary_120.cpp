@@ -4,9 +4,7 @@
 
 namespace re5::split120 {
 
-extern int QueryGameStatus_C42D90();
 extern SplitRenderState120* GetSplitState_123457C();
-extern int FullCoordTransform_76A460(int x);
 extern int PanelTransform_76C2A0(int x);
 extern void DrawUiItem_9E3E70(void* self, int width, int x, int y,
                               int* localValue, int stringOrId,
@@ -51,7 +49,7 @@ void SplitDrawPrimary_A23A00(void* self, int itemIndex)
     if (QueryGameStatus_C42D90() == 1) {
         auto* split = GetSplitState_123457C();
         if (split->fullScreenSplitMode != 0 && split->transientSplitFlag == 0)
-            x = FullCoordTransform_76A460(x);
+            x = FullCoordTransform_76A460(split, x);
         else
             x = static_cast<int>(static_cast<float>(x) + split->splitOffset);
 

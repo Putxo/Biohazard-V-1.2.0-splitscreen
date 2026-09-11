@@ -6,19 +6,11 @@ extern std::uint8_t* gRoot_12340A4;
 extern std::uint8_t* gInput_1249C40;
 extern void* gUiInput_11B20C4;
 extern bool __thiscall SessionHasLocalCoop_C43BB0(void*);
-extern int __thiscall QueryGameStatus_C42D90(void*);
 extern bool __thiscall UiEventBlocked_728C90(void*);
-extern void __thiscall UiCommand4370_7B4370(void*,int,int);
-extern void __thiscall UiCommand4480_7B4480(void*,int,int,int);
-extern bool __thiscall PreferredOwnerAllowsCurrentKeyboard_799B50(void*);
 extern std::uint8_t __thiscall InputOwnerModeGate_799AF0(void*,int);
 extern bool __thiscall InputCommand_799B90(std::uint8_t*,int,int);
 extern bool __thiscall InputCommandAlt_799C80(std::uint8_t*,int,int);
 extern int __thiscall UiCurrentCode_7B4360(void*,int);
-extern bool __thiscall UiRoute5750_7B5750(void*,int,int,int,int);
-extern int __thiscall UiGetSelection_7B5360(void*,int);
-extern bool __thiscall UiOwnedInput38_7B4660(void*,int);
-extern int __thiscall UiGetCursor_7B52A0(void*,int);
 extern std::uint8_t* gUiManager_1234578;
 
 static inline std::uint8_t* Session(){return *reinterpret_cast<std::uint8_t**>(gRoot_12340A4+0x1042C);}

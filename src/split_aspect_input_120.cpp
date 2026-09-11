@@ -11,7 +11,6 @@ struct RenderDimensionsA2D120 {
 
 extern void* gUiInput_11B20C4;
 extern RenderDimensionsA2D120* gRenderDimensions_12345D4;
-extern int QueryGameStatus_C42D90();
 extern void InputBaseUpdate_7B4370(void* manager, int arg1, int arg2);
 extern void InputSplitOffset_7B4480(void* manager, int zero, int value, int arg2);
 

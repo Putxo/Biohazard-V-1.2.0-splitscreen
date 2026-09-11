@@ -4,7 +4,6 @@ struct MercsPlayerUi120 { std::uint8_t _000[0x188]; std::int32_t slot188; std::i
 extern void BaseCtor_A16EC0(void*);
 extern std::uint8_t* gRoot_12340A4;
 extern std::uint8_t* gInput_1249C40;
-extern bool IsMercsLocalSplit_C42EC0(void*);
 extern bool SessionPredicate_C42870(void*);
 // 0x00A42110..0x00A421C5 -- VERIFIED constructor.
 // In the native Mercs/Reunion local route, slot 0 is rebound to session+654
@@ -15,7 +14,7 @@ MercsPlayerUi120* InitMercsPlayerDeviceOwner_A42110(MercsPlayerUi120* self) {
     auto* session=*reinterpret_cast<std::uint8_t**>(gRoot_12340A4+0x1042C);
     self->slot188=*reinterpret_cast<std::int32_t*>(session+0x5DC);
     self->device18C=*reinterpret_cast<std::int32_t*>(gInput_1249C40+0x5D8);
-    if(IsMercsLocalSplit_C42EC0(session)) {
+    if(IsMercsLocalSplitRow_C42EC0(session)) {
         if(self->slot188==0) self->device18C=*reinterpret_cast<std::int32_t*>(session+0x654);
         else if(self->slot188==1) self->device18C=*reinterpret_cast<std::int32_t*>(session+0x658);
     }

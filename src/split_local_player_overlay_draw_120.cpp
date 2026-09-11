@@ -1,7 +1,7 @@
 #include <cstdint>
 namespace re5::split120 {
 extern std::uint8_t* gRoot_12340A4; extern std::uint8_t* gSplit_123457C; extern std::uint8_t* gDisplay_12345D4; extern std::uint8_t* gProfile_11B2158; extern void* gPlayerManager_11B27DC; extern void* gUiInput_11B20C4;
-extern int QueryGameStatus_C42D90(void*); extern int ResolveSplitPlayer_76A1E0(void*,int); extern int ResolveSplitSubIndex_76A250(void*,int); extern int FullCoordTransform_76A460(void*,int); extern int SplitVerticalTransform_76A4A0(void*,int); extern int PanelTransform_76C2A0(void*,int);
+extern int ResolveSplitPlayer_76A1E0(void*,int); extern int ResolveSplitSubIndex_76A250(void*,int); extern int PanelTransform_76C2A0(void*,int);
 extern void* FindPlayerActorByNo_7E6220(void*,int); extern int ResolvePlayerRuntime_7E6370(void*,void*);
 extern void MeasureOverlay_7DC6B0(void*,int,int,void*,int,int,int,int); extern void* gUiRenderer_11B26F0;
 // 0x7DDFB0 is a generic renderer. Its non-split internal ABI remains abstracted;

@@ -2,7 +2,7 @@
 namespace re5::split120 {
 extern std::uint8_t* gRoot_12340A4; extern std::uint8_t* gInput_1249C40; extern void* gUiInput_11B20C4;
 extern void* gFrontend_11B1D0C; extern void* gPlayerManager_11B27DC; extern std::uint8_t* gDisplay_12345D4; extern std::uint8_t* gFrame_11B209C;
-extern int QueryGameStatus_C42D90(void*); extern int PollFrontendEntry_79F720(void*,void*,int,int); extern void EmitFrontendEvent_79F790(void*,int,void*);
+extern int PollFrontendEntry_79F720(void*,void*,int,int); extern void EmitFrontendEvent_79F790(void*,int,void*);
 extern std::uint32_t PhysicalInputMask_799820(void*,int); extern std::uint32_t OwnerInputMask_79B340(void*,int);
 extern bool UiConfirmQuery_7B63C0(void*,int,int,int); extern bool OwnerPhysicalInputA_79AF10(void*,int); extern bool OwnerPhysicalInputB_79B010(void*,int);
 extern void* FindPlayerActorByNo_7E6220(void*,int); extern void ClearPreferredOwner_799B30(void*,int); extern void ResetLocalUiSlot_7D9B30(void*,int); extern void DrawLocalPlayerOverlay_7DEA10(void*,void*,int);

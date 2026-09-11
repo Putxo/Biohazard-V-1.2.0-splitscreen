@@ -4,7 +4,6 @@ extern std::uint8_t* gInput_1249C40;
 extern void* gUiInput_11B20C4;
 extern bool InputCommand_799B90(std::uint8_t*,int,int);
 extern bool InputOwnerModeGate_799AF0(void*,int);
-extern bool UiRoute5620_7B5620(void*,int,int,int);
 static inline int Owner(){return *reinterpret_cast<int*>(gInput_1249C40+0x614);}
 
 // 0x00A43968..0x00A4398F -- exact player-0 exit gate.

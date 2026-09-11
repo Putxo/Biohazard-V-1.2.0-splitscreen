@@ -10,9 +10,7 @@ struct UiPanel120 {
     int originX;
 };
 
-extern int QueryGameStatus_C42D90();
 extern SplitRenderState120* gSplitRenderState_123457C;
-extern int FullCoordTransform_76A460(int value);
 extern int PanelTransform_76C2A0(SplitRenderState120* self, int value);
 extern void DrawUiPrimitive_9E5DE0(UiPanel120* self,
                                    int width,
@@ -51,7 +49,7 @@ void DrawSecondarySplitMenu_A23B40(void* opaque)
         SplitRenderState120* split = gSplitRenderState_123457C;
 
         if (IsFullSplitEffective(split))
-            x = FullCoordTransform_76A460(x);
+            x = FullCoordTransform_76A460(split, x);
         else
             x = static_cast<int>(static_cast<float>(x) + split->splitOffset);
 

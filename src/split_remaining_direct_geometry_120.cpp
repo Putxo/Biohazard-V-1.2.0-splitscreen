@@ -2,9 +2,7 @@
 namespace re5::split120 {
 struct SplitState120{std::uint8_t _0[0x3070];float scale;};
 extern SplitState120* gSplit_123457C;
-extern int FullCoordTransform_76A460(void*,int);
 extern int PanelTransform_76C2A0(void*,int);
-extern int SplitVerticalTransform_76A4A0(void*,int);
 static inline int truncf(float v){return static_cast<int>(v);}
 static inline int halfTowardZero(int v){return v/2;}
 

@@ -8,7 +8,6 @@ extern std::uint32_t ReadInputMaskC_7997C0(std::uint8_t*,int);
 extern std::uint32_t ReadOwnerMaskA_79B340(std::uint8_t*,int);
 extern std::uint32_t ReadOwnerMaskB_79B530(std::uint8_t*,int);
 extern std::uint32_t ReadOwnerMaskC_79B720(std::uint8_t*);
-extern void SessionSetDevice_C42A50(void*,int,int);
 static inline bool InputSuppressed(){return *reinterpret_cast<std::uint8_t*>(gRoot_12340A4+0x10428)!=0;}
 static inline int DeviceOrPreferred(int d){return d<0?*reinterpret_cast<int*>(gInput_1249C40+0x5D8):d;}
 static inline bool IncludeOwnerChannel(int player){return player<0||player==*reinterpret_cast<int*>(gInput_1249C40+0x614);}

@@ -4,7 +4,6 @@ namespace re5::split120 {
 
 extern std::uint8_t* gRoot_12340A4;
 extern std::uint8_t* gDisplay_12345D4;
-extern int __thiscall QueryGameStatus_C42D90(void* session);
 extern void* NativeAlignedAlloc_11AF294(std::uint32_t bytes, std::uint32_t alignment);
 extern SplitResource120* ConstructSplitResource_B8D6A0(void* storage);
 extern void RegisterSplitResource_428B80(int id, SplitResource120* resource);

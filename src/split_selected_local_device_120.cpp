@@ -5,7 +5,6 @@ namespace re5::split120 {
 extern std::uint8_t* gRoot_12340A4;
 extern std::uint8_t* gInput_1249C40;
 extern void* gPlayerManager_11B27DC;
-extern bool __thiscall IsNativeLocalCoopActive_C43BB0(const void* session);
 extern void* __thiscall FindPlayerActorByNo_7E6220(void* manager,int playerNo);
 extern void* __thiscall FindDefaultPlayerActor_7E6290(void* manager);
 

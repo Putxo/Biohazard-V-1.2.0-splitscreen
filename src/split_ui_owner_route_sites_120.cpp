@@ -3,13 +3,6 @@
 namespace re5::split120 {
 extern std::uint8_t* gInput_1249C40;
 extern void* gUiInput_11B20C4;
-extern bool __thiscall UiRoute5620_7B5620(void*,int,int,int);
-extern bool __thiscall UiRoute5750_7B5750(void*,int,int,int,int);
-extern int  __thiscall UiSelectionStep_7B5900(void*,int,int,int,int,int);
-extern int  __thiscall UiSelectionStepBy_7B59B0(void*,int,int,int,int,int,int);
-extern int  __thiscall UiGetCursor_7B52A0(void*,int);
-extern int  __thiscall UiGetSelection_7B5360(void*,int);
-
 static inline bool Owner(int objectOwner){
     return objectOwner==*reinterpret_cast<const int*>(gInput_1249C40+0x614);
 }

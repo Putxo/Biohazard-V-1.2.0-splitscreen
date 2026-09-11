@@ -33,10 +33,8 @@ extern int AdjustUiCoordinates_9E3EE0(void* self,
                                       int* y,
                                       int resourceId,
                                       int arg7);
-extern int QueryGameStatus_C42D90();
 extern int MeasureUiWidth_9E3C80(int uiA);
 extern SplitRenderState120* gSplitRenderState_123457C;
-extern int FullCoordTransform_76A460(int value);
 extern int PanelTransform_76C2A0(SplitRenderState120* split, int value);
 extern void* gUiRenderer_11B26F0;
 extern void LowLevelDraw_7DDFB0(void* renderer,
@@ -98,7 +96,7 @@ bool DrawFallbackRecord_9E5C6E(void* selfOpaque,
             0.00078125001164153218f);
 
         transformedX = IsFullSplitEffective(split)
-            ? FullCoordTransform_76A460(scaledBaseX)
+            ? FullCoordTransform_76A460(split, scaledBaseX)
             : static_cast<int>(static_cast<float>(scaledBaseX) +
                                split->splitOffset);
 

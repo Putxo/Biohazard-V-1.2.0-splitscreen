@@ -12,8 +12,6 @@ struct MercsFrontendPlayerView120 {
     std::int32_t secondDevice6B0;
 };
 extern std::uint8_t* gRoot_12340A4;
-extern bool IsMercsRow0_C42E80(void*);
-extern bool IsMercsRow1_C42EA0(void*);
 extern void RefreshMercsPlayer_A432C0(void*,int);
 extern void ApplyMercsPlayerOption_A43360(void*,int);
 // 0x00A466C0..0x00A46A30 -- VERIFIED split/local-relevant reconstruction.

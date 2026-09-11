@@ -34,9 +34,6 @@ extern bool __thiscall UiConfirmFallback_7B63C0(void*,int,int,int);
 extern void __thiscall UiConfirmSound_9E4A90(void*);
 extern void __thiscall UiCancelSound_9E4A70(void*);
 extern void* __thiscall ResolveCurrentContext_768C10(void*);
-extern void __thiscall SetLocalPlayerActive_716720(void*,bool,int,int);
-extern void __thiscall SessionSetDevice_C42A50(void*,int,int);
-extern void __thiscall RootSetFlags_726120(void*,std::uint32_t);
 extern void __thiscall FinalizeCurrentContext_723420(void*);
 
 static inline float FrameDelta_A2EC50(){

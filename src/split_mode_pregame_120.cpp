@@ -11,8 +11,6 @@ struct StageController120 {
 extern std::uint8_t* gPlayerStateRoot_11B2158;
 extern std::uint8_t* gRoot_12340A4;
 extern std::uint8_t* gInput_1249C40;
-extern void SessionSetSlotMode_C42A30(Session120*, int slot, int mode);
-extern void SessionSetDevice_C42A50(Session120*, int slot, int device);
 extern void SessionSetPair_C42A70(Session120*, int slot, int value);
 extern void SessionSetPair_C42A90(Session120*, int slot, int value);
 extern void SessionSetPair_C42AB0(Session120*, int slot, int value);

@@ -16,10 +16,7 @@ static inline std::uint8_t* Bytes(Session120* session)
 }
 
 extern void* gUiInput_11B20C4;
-extern void __thiscall UiRoute43C0_7B43C0(void* ui,int arg1,int arg2);
 extern bool __thiscall IsMode1Route23_C42E10(Session120* session);
-extern void __thiscall SetSessionAuxPair_C42AB0(Session120* session,int slot,int value);
-
 // Normal Mercenaries frontend family.
 // Vtable update entry 0xA47CE0 shares its class with init method 0xA41410;
 // 0xA41410 directly requests "id\\jpn\\merce\\merce_00" (0xFA9C04).

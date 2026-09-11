@@ -2,8 +2,6 @@
 namespace re5::split120 {
 struct SplitState120{std::uint8_t _0[0x3064];std::uint8_t active;std::uint8_t _3065[0x3070-0x3065];float scale;};
 extern SplitState120* gSplit_123457C;
-extern int FullCoordTransform_76A460(void*,int);
-extern int SplitVerticalTransform_76A4A0(void*,int);
 extern int PanelTransform_76C2A0(void*,int);
 
 // 0x00852B27..0x00852B79 -- exact scalar selection. Native starts at 1.0,

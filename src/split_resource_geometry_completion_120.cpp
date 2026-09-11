@@ -25,8 +25,6 @@ struct ResourceOwner120 {
 struct ResourceTriplet120 { float x, y, scale; };
 
 extern SplitRenderState120* gSplitRenderState_123457C;
-extern int QueryGameStatus_C42D90();
-
 // 0x009EEE00..0x009EEE2F -- VERIFIED.
 void CacheResourceSplitState_9EEE00(ResourceOwner120* self)
 {

@@ -6,7 +6,6 @@ extern std::uint8_t* gRoot_12340A4;
 extern std::uint8_t* gInput_1249C40;
 extern std::uint8_t* gPhysicalInput_1249C74;
 extern void* gUiInput_11B20C4;
-extern bool __thiscall IsNativeLocalCoopActive_C43BB0(const void* session);
 extern bool __thiscall UiFallbackInput_7B4710(void*,int);
 
 static inline void* Session(){return *reinterpret_cast<void**>(gRoot_12340A4+0x1042C);}

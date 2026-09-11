@@ -3,8 +3,6 @@ namespace re5::split120 {
 extern std::uint8_t* gInput_1249C40; extern void* gUiInput_11B20C4; extern std::uint8_t* gRoot_12340A4; extern std::uint8_t* gSplit_123457C;
 extern std::uint32_t ReadRoutedInputMaskA_9E3420(int,int); extern bool InputCommand_799B90(std::uint8_t*,int,int);
 extern bool UiConfirmFallback_7B63C0(void*,int,int,int); extern int UiSelection_7B5870(void*,int,int,int,int);
-extern void UiCommand4370_7B4370(void*,int,int); extern void UiCommand4480_7B4480(void*,int,int,int); extern void UiRoute43C0_7B43C0(void*,int,int); extern bool UiRoute5620_7B5620(void*,int,int,int); extern bool UiRoute5750_7B5750(void*,int,int,int,int);
-extern int __thiscall QueryGameStatus_C42D90(void*);
 struct UiBase120{std::uint8_t _00[0x2c];int xOffset;int yOffset;int playerNo;std::uint8_t _38[0x188-0x38];int device;int context;};
 static inline bool Own(const UiBase120*s){return s->playerNo==*reinterpret_cast<int*>(gInput_1249C40+0x614);}
 static inline void* Session(){return *reinterpret_cast<void**>(gRoot_12340A4+0x1042C);}

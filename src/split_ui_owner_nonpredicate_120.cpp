@@ -6,7 +6,6 @@ struct Session120;
 extern std::uint8_t* gRoot_12340A4;
 extern std::uint8_t* gInput_1249C40;
 extern std::uint8_t* gPlayerRoot_11B2158;
-extern int __thiscall QueryGameStatus_C42D90(Session120*);
 extern int __thiscall FindLocalSlotForDevice_C42C20(Session120*,int);
 
 static inline Session120* Session(){

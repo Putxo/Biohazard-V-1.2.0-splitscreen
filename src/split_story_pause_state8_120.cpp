@@ -30,12 +30,10 @@ static_assert(sizeof(StoryPauseRecordState7View120)==0x68,"state7 record stride"
 extern void __thiscall UiConfirmSound_9E4A90(void* owner);
 extern void __thiscall UiCancelSound_9E4A70(void* owner);
 extern void* __thiscall ResolveCurrentContext_768C10(void* manager);
-extern void __thiscall SetLocalPlayerActive_716720(void* context,bool active,int slot,int device);
 extern void __thiscall SplitLocalTransition_76B520(void* split);
 extern void __thiscall UpdateSplitViewportState_76CC60(void* split);
 extern void __thiscall SetInputTransition_794FF0(void* inputState,int value);
 extern void __thiscall RefreshLocalJoinOwner_7F1280(void* owner);
-extern void __thiscall RootSetFlags_726120(void* root,std::uint32_t mask);
 extern void __thiscall FinalizeCurrentContext_723420(void* context);
 
 static inline float StoryFrameDelta120(){

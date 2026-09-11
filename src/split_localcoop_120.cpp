@@ -5,7 +5,6 @@ bool IsFullSplitEffective(const SplitRenderState120* self){return self->fullScre
 struct Session120; struct InputManager120;
 
 // 0x00716720 -- native is stdcall with three stack arguments, ret 0x0C.
-extern void __stdcall SetLocalPlayerActive_716720(bool,int,int);
 void SetLocalPlayerActive(bool active,int slot,int device){SetLocalPlayerActive_716720(active,slot,device);}
 
 // 0x00720CE0 -- ECX=AGame + three stack arguments, ret 0x0C.
@@ -99,7 +98,6 @@ bool __thiscall LocalJoinBusy_716340(AGame120* self){
     if((low&0x80u)!=0)return true;
     return(low&0x40u)!=0;
 }
-extern int __thiscall CountActiveSessionSlots_C42B60(const Session120*);
 extern void __thiscall SetSessionSlotDevice_C42A50(Session120*,int,int);
 extern void __thiscall InputRoute_7996B0(InputManagerJoinView120*,int);
 
