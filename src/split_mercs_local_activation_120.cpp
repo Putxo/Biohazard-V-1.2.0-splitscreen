@@ -5,8 +5,6 @@ namespace re5::split120 {
 struct Session120;
 extern std::uint8_t* gInput_1249C40;
 extern std::uint8_t* gPlayerRoot_11B2158;
-extern bool IsMercsRow1_C42EA0(const Session120*);
-extern bool IsMercsLocalSplitRow_C42EC0(const Session120*);
 
 static inline std::uint8_t* Bytes(Session120* p) { return reinterpret_cast<std::uint8_t*>(p); }
 
