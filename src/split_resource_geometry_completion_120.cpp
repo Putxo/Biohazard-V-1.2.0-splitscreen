@@ -26,10 +26,8 @@ struct ResourceTriplet120 { float x, y, scale; };
 
 extern SplitRenderState120* gSplitRenderState_123457C;
 extern int QueryGameStatus_C42D90();
-extern int SplitXFromParam_76A420(const SplitRenderState120*, int);
 
 // 0x009EEE00..0x009EEE2F -- VERIFIED.
-// Exact native cache refresh inside 0x009EDE30.
 void CacheResourceSplitState_9EEE00(ResourceOwner120* self)
 {
     const int status = QueryGameStatus_C42D90();
@@ -42,9 +40,6 @@ void CacheResourceSplitState_9EEE00(ResourceOwner120* self)
 }
 
 // 0x009EF37B..0x009EF3C9 -- VERIFIED.
-// Late row branch. In status 1, X is remapped and scale becomes splitScale,
-// except selector 0x0A skips those two writes. The integer Y offset is always
-// cleared in status 1; common code then subtracts it from row.y.
 float ApplyLateResourceRowSplit_9EF37B(ResourceTriplet120& row,
                                        int& integerYOffset,
                                        int selector)
@@ -53,7 +48,7 @@ float ApplyLateResourceRowSplit_9EF37B(ResourceTriplet120& row,
         if (selector != 0x0A) {
             SplitRenderState120* split = gSplitRenderState_123457C;
             row.x = static_cast<float>(
-                SplitXFromParam_76A420(split, static_cast<int>(row.x)));
+                SplitCoordTransform_76A420(split, static_cast<int>(row.x)));
             row.scale = split->splitScale;
         }
         integerYOffset = 0;
@@ -63,8 +58,6 @@ float ApplyLateResourceRowSplit_9EF37B(ResourceTriplet120& row,
 }
 
 // 0x009EF413..0x009EF444 -- VERIFIED.
-// Prepares the exact state consumed by the four-node application loop at
-// 0x009EF450: owner+0xD8, row selector 1/2, and uniform split scale.
 void PrepareFourResourceNodesSplit_9EF413(ResourceOwner120* self,
                                           int& rowSelector,
                                           float& uniformScale)
