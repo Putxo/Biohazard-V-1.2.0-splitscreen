@@ -26,6 +26,7 @@ add_library(re5_split120 STATIC
     src/split_gameplay_keyboard_owner_120.cpp
     src/split_gameplay_owner_completion_120.cpp
     src/split_input_availability_120.cpp
+    src/split_input_command_mapping_120.cpp
     src/split_routed_prompt_120.cpp
     src/split_preferred_device_owner_binding_120.cpp
     src/split_keyboard_owner_writers_completion_120.cpp
