@@ -19,4 +19,18 @@ void __thiscall UiRoute43C0_7B43C0(void* ui,int a,int b);
 void __thiscall RootSetFlags_726120(void* root,std::uint32_t mask);
 void __thiscall SetLocalPlayerActive_716720(void* context,bool active,int slot,int device);
 
+// Audited compatibility adapters for early translation units that used
+// convenience overloads before the exact native ABI was recovered. They are
+// deliberately inline so no fake external symbol survives into the archive.
+static inline void* NativeSession_120(){
+    auto* root=*reinterpret_cast<std::uint8_t**>(0x012340A4);
+    return *reinterpret_cast<void**>(root+0x1042C);
+}
+static inline int QueryGameStatus_C42D90(){
+    return QueryGameStatus_C42D90(NativeSession_120());
+}
+static inline void __stdcall SetLocalPlayerActive_716720(bool active,int slot,int device){
+    SetLocalPlayerActive_716720(nullptr,active,slot,device);
+}
+
 } // namespace re5::split120
