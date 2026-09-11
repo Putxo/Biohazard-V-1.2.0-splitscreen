@@ -28,44 +28,38 @@ The reverse-engineering work uses the unpacked runnable 1.2.0 analysis candidate
 
 The packed retail executable is not committed here.
 
-## Current progress
+## Current status — static executable-side scope closed
 
-### Stage 1
+As of **2026-09-11**, the executable-side native implementation in the scope above has reached static audit closure.
 
-Recovered/identified:
+The final sweep covers:
 
-- `0x00763170` — effective Full split predicate.
-- `0x0076C0C0` — central split geometry calculation.
-- `0x00723460` — recurring native local-join detector.
-- `0x00720CE0` — transition into native Add Player state.
-- `0x00716720` — activate/deactivate local player slot.
-- `0x00725C23` — state-13 callsite into local-player activation.
+- local-J2 detection, Add Player, activation and transition state machines;
+- `mKeyboardPlayerNo` / device ownership and routing for Story, LIN/DE and Mercs/Reunion;
+- direct consumers of the split-state object at `0x0123457C`, including `+0x3064..+0x3085`;
+- Default/Full viewport and coordinate helpers;
+- split HUD, prompts, menu geometry, resources, cursor, projection, aspect correction and hit testing;
+- remaining direct split consumers found by the expanded binary sweep.
 
-### Stage 2
+The expanded split-state audit classified **91 candidate instruction groups by base provenance**; no confirmed direct split-object consumer found by that audit remains unclassified. The corresponding high-confidence `InputManager+0x614` ownership sweep is likewise classified, with unrelated displacement collisions excluded.
 
-`0x0076C1F0` has been promoted from Discovered to Partial and reconstructed as the split activation/resource-lifecycle routine:
+Final audit:
 
-- updates `splitActive` at `+0x3064`;
-- general aspect threshold `0.5625`;
-- special status-7 path involving threshold `0.425`;
-- allocates a native `0x230` secondary split resource when needed;
-- stores it at `+0x3008`;
-- sets resource flag `0x2000`;
-- registers it using native id `0x1E`;
-- cleanup clears `0x2000`, calls virtual release at vtable `+0x30`, and nulls the pointer.
+- `analysis/FINAL_LOCAL_J2_SPLIT_DECOMP_AUDIT_2026-09-11.md`
+- `analysis/final_local_j2_split_manifest_2026-09-11.csv`
 
-Next render anchors added to the catalog:
+### Build validation
 
-- `0x00A23A00` — split draw operation.
-- `0x00A23B40` — secondary split draw operation.
-- `0x00A24850..0x00A24C70` — larger split-only render/UI family.
+Commit `1e89b85b0ac1dd614ff0a7921456b205cd73f367` passed GitHub Actions **Static Win32 decomp build #83** (`run id 34571360835`).
 
-The next pass follows those functions to recover viewport-specific rendering and HUD/text containment.
+The target is built with Clang 18 for `i686-pc-windows-msvc`, C++17 freestanding mode and `-Wall -Wextra -Wpedantic`. All **123/123** build steps completed and the static archive was produced.
+
+This status means the **static/decompilation scope is closed**. It does **not** claim runtime certification in the real Windows/DirectX game. Runtime testing of Story, LIN/DE, Mercs/Reunion, controller/keyboard combinations, Default/Full layouts, aspect changes, leave/rejoin and persistence remains a separate validation phase.
 
 ## Status rules
 
-- `Discovered`: address/function role identified but not reconstructed.
-- `Partial`: substantial behavior reconstructed, unresolved helpers/semantics remain.
+- `OutOfScope`: audited code is not part of the local-J2/split implementation.
 - `Verified`: instruction-level behavior is sufficiently established from the binary evidence available in this project.
+- `Split-relevant scope complete`: every split/local-J2 block inside a larger generic parent function is reconstructed or explicitly isolated; unrelated parent code is intentionally excluded.
 
 No function is marked Verified only because it has a plausible pseudocode translation.
