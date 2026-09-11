@@ -15,10 +15,40 @@ static_assert(__builtin_offsetof(SystemSettingsOwner120,splitModeQuality)==0x105
 struct MenuEnum120;
 extern std::uint8_t* gRoot_12340A4;
 extern SplitRenderState120* gSplitRenderState_123457C;
+extern void* gSettingsRegistry_12337DC;
 extern int __thiscall MenuEnumCurrent_424F30(MenuEnum120* menu);
 extern void __thiscall RebuildRuntimeSplitUi_76CC10(SplitRenderState120* split);
 extern int __thiscall QueryGameStatus_C42D90(void* session);
 static inline void* Session(){return *reinterpret_cast<void**>(gRoot_12340A4+0x1042C);}
+
+// Exact 0x28-byte descriptor shape copied by the native compiler at both
+// 0x781695 and 0x782D72. The two 16-bit fields are independently written.
+struct NativeSettingDescriptor120 {
+    const void* name;             // +00
+    std::uint16_t kind;           // +04
+    std::uint16_t flags;          // +06
+    void* owner;                  // +08
+    void* getterOrField;          // +0C
+    void* aux10;                  // +10
+    void* setter;                 // +14
+    void* aux18;                  // +18
+    void* aux1C;                  // +1C
+    void* aux20;                  // +20
+    void* aux24;                  // +24
+};
+static_assert(sizeof(NativeSettingDescriptor120)==0x28,"native settings descriptor size");
+static_assert(__builtin_offsetof(NativeSettingDescriptor120,setter)==0x14,"native setter offset");
+
+// Stack layout at 0x7816DB..0x78171E is exactly:
+//   push 0,0,0,enumTable ; copy descriptor by value ; push 2 ; ECX=registry.
+// This declaration mirrors that thiscall stack order.
+extern void __thiscall RegisterEnumSetting_425960(void* registry,
+                                                  int valueCount,
+                                                  NativeSettingDescriptor120 descriptor,
+                                                  const void* enumTable,
+                                                  int aux0,int aux1,int aux2);
+extern void __thiscall RegisterSerializedSetting_422C00(void* serializer,
+                                                        const NativeSettingDescriptor120* descriptor);
 
 struct SplitModeOptionMetadata120 {
     const char* settingName;
@@ -45,6 +75,26 @@ int __thiscall GetSplitModeQuality_77EAD0(const SystemSettingsOwner120* self){re
 // 0x0077EAE0: ECX=self, one stack arg, ret 4.
 void __thiscall SetSplitModeQuality_77EAE0(SystemSettingsOwner120* self,int value){self->splitModeQuality=value;}
 
+// 0x00781695..0x0078171E -- exact SplitModeQuality enum registration.
+// Parent 0x7813C0 establishes kind=6, flags=0x80, zero=0 and owner=EDI.
+void RegisterSplitModeQuality_781695(SystemSettingsOwner120* self)
+{
+    NativeSettingDescriptor120 d{};
+    d.name=reinterpret_cast<const void*>(0x00F5A034); // "SplitModeQuality"
+    d.kind=6;
+    d.flags=0x80;
+    d.owner=self;
+    d.getterOrField=reinterpret_cast<void*>(0x0077EAD0);
+    d.aux10=nullptr;
+    d.setter=reinterpret_cast<void*>(0x0077EAE0);
+    d.aux18=d.aux1C=d.aux20=d.aux24=nullptr;
+
+    RegisterEnumSetting_425960(gSettingsRegistry_12337DC,
+                               2,d,
+                               reinterpret_cast<const void*>(0x00F5F4B4),
+                               0,0,0);
+}
+
 // 0x0078172A..0x0078174D: native default = HIGH (1).
 void InitializeSplitModeQualityDefault_78174D(SystemSettingsOwner120* self){self->splitModeQuality=1;}
 
@@ -63,13 +113,31 @@ void ApplyFullSplitOptionSlot10_781210(MenuEnum120* option){
         RebuildRuntimeSplitUi_76CC10(gSplitRenderState_123457C);
 }
 
-// Registration 0x781695..0x78171E:
-//   0xF5A034 = "SplitModeQuality"
-//   getter=0x77EAD0, setter=0x77EAE0, enum table=0xF5F4B4 (LOW/HIGH)
-//   generic descriptor registrar=0x425960.
-// Serialization 0x782D72..0x782DB1:
-//   self+0x10540 under key 0xF5F824 = "mSplitModeQuality", helper=0x422C00.
-// The localized visible label (e.g. Spanish "Modo de pantalla partida") lives
-// in game localization resources, not as this executable's internal ASCII key.
+// 0x00782D72..0x00782DB1 -- exact serializer descriptor for +0x10540.
+// Parent 0x782C50 establishes EBP=6 and ESI=0. Unlike the enum-registration
+// descriptor, +0x0C is a direct field pointer and +0x14 is zero.
+void SerializeSplitModeQuality_782D72(SystemSettingsOwner120* self,void* serializer)
+{
+    NativeSettingDescriptor120 d{};
+    d.name=reinterpret_cast<const void*>(0x00F5F824); // "mSplitModeQuality"
+    d.kind=6;
+    d.flags=0;
+    d.owner=self;
+    d.getterOrField=&self->splitModeQuality;
+    d.aux10=nullptr;
+    d.setter=nullptr;
+    d.aux18=d.aux1C=d.aux20=d.aux24=nullptr;
+    RegisterSerializedSetting_422C00(serializer,&d);
+}
+
+// Executable identity summary:
+//   option key     0xF5A034 = "SplitModeQuality"
+//   saved key      0xF5F824 = "mSplitModeQuality"
+//   enum table     0xF5F4B4 = LOW/HIGH
+//   setting slot   10, cached at self+0x104F8
+//   backing field  self+0x10540
+//   runtime flag   split+0x3084
+// The localized visible label (Spanish builds display the localized menu text)
+// comes from game language resources rather than the internal ASCII setting key.
 
 } // namespace re5::split120
