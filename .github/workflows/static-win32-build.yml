@@ -31,6 +31,8 @@ jobs:
           echo "All ${#sources[@]} src/*.cpp files are included in CMakeLists.txt."
       - name: Audit canonical native ABI declarations
         run: python3 tools/audit_native_abi.py
+      - name: Audit final split/J2 closure
+        run: python3 tools/audit_split_closure.py
       - name: Configure i686 COFF static library
         run: cmake -S . -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/win32-clang.cmake
       - name: Build
