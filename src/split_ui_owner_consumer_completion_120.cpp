@@ -17,7 +17,7 @@ extern bool __thiscall InputCommandAlt_799C80(std::uint8_t*,int,int);
 extern int __thiscall UiCurrentCode_7B4360(void*,int);
 extern bool __thiscall UiRoute5750_7B5750(void*,int,int,int,int);
 extern int __thiscall UiGetSelection_7B5360(void*,int);
-extern bool __thiscall UiSelectionChanged_7B4660(void*,int);
+extern bool __thiscall UiOwnedInput38_7B4660(void*,int);
 extern int __thiscall UiGetCursor_7B52A0(void*,int);
 extern std::uint8_t* gUiManager_1234578;
 
@@ -88,7 +88,7 @@ bool UpdateOwnedSelector_A037C0(OwnerManager120* self,OwnerRecord120* rec){
     else if(rec->player==0)routed=UiRoute5750_7B5750(gUiInput_11B20C4,0,0,8,0);
     else routed=UiRoute5750_7B5750(gUiInput_11B20C4,9,0x11,0,0);
     if(routed)self->pending=UiGetSelection_7B5360(gUiInput_11B20C4,0);
-    if(self->pending==-1 || !UiSelectionChanged_7B4660(gUiInput_11B20C4,0)){self->changed=0;self->pending=-1;return false;}
+    if(self->pending==-1 || !UiOwnedInput38_7B4660(gUiInput_11B20C4,0)){self->changed=0;self->pending=-1;return false;}
     const int pending=self->pending;
     const int current=UiGetCursor_7B52A0(gUiInput_11B20C4,0);
     if(current==pending)return false;
