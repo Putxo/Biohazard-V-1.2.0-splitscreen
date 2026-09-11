@@ -1,15 +1,26 @@
 #include <cstdint>
 namespace re5::split120 {
-extern std::uint8_t* gInput_1249C40; extern void* gUiInput_11B20C4; extern std::uint8_t* gRoot_12340A4;
+extern std::uint8_t* gInput_1249C40; extern void* gUiInput_11B20C4; extern std::uint8_t* gRoot_12340A4; extern std::uint8_t* gSplit_123457C;
 extern std::uint32_t ReadRoutedInputMaskA_9E3420(int,int); extern bool InputCommand_799B90(std::uint8_t*,int,int);
 extern bool UiConfirmFallback_7B63C0(void*,int,int,int); extern int UiSelection_7B5870(void*,int,int,int,int);
-extern void UiCommand4370_7B4370(void*,int,int); extern void UiRoute43C0_7B43C0(void*,int,int); extern bool UiRoute5620_7B5620(void*,int,int,int); extern bool UiRoute5750_7B5750(void*,int,int,int,int);
+extern void UiCommand4370_7B4370(void*,int,int); extern void UiCommand4480_7B4480(void*,int,int,int); extern void UiRoute43C0_7B43C0(void*,int,int); extern bool UiRoute5620_7B5620(void*,int,int,int); extern bool UiRoute5750_7B5750(void*,int,int,int,int);
+extern int __thiscall QueryGameStatus_C42D90(void*);
 struct UiBase120{std::uint8_t _00[0x2c];int xOffset;int yOffset;int playerNo;std::uint8_t _38[0x188-0x38];int device;int context;};
 static inline bool Own(const UiBase120*s){return s->playerNo==*reinterpret_cast<int*>(gInput_1249C40+0x614);}
+static inline void* Session(){return *reinterpret_cast<void**>(gRoot_12340A4+0x1042C);}
 // A22BB0 VERIFIED constructor: captures current keyboard player as owner +34.
 void InitSplitUiBase_A22BB0(UiBase120*s){s->device=0;s->context=0;s->xOffset=0;s->yOffset=0;s->playerNo=*reinterpret_cast<int*>(gInput_1249C40+0x614);}
-// A22DF0 VERIFIED: only owning player emits command and split input transform.
-bool EmitOwnedUiCommand_A22DF0(UiBase120*s,int command,int param){if(!Own(s))return false;UiCommand4370_7B4370(gUiInput_11B20C4,command,param);return true;}
+// 0xA22DF0..A22E67 exact: ECX=self, stack args routeIndex, command, param.
+// Owner sends the normal command. In status 1 and routeIndex<=7 native then
+// writes vector (0, int(splitScale * -40.0f)) to the same UI record index.
+void EmitOwnedUiCommand_A22DF0(UiBase120*s,int routeIndex,int command,int param){
+    if(!Own(s))return;
+    UiCommand4370_7B4370(gUiInput_11B20C4,command,param);
+    if(QueryGameStatus_C42D90(Session())!=1 || static_cast<unsigned>(routeIndex)>7u)return;
+    const float scale=*reinterpret_cast<const float*>(gSplit_123457C+0x3070);
+    const int y=static_cast<int>(scale*-40.0f);
+    UiCommand4480_7B4480(gUiInput_11B20C4,0,y,param);
+}
 // A22E70 VERIFIED: route reset exists only for owning player.
 bool ResetOwnedUiRoutes_A22E70(UiBase120*s){if(!Own(s))return false;UiRoute43C0_7B43C0(gUiInput_11B20C4,1,0);UiRoute43C0_7B43C0(gUiInput_11B20C4,1,1);UiRoute43C0_7B43C0(gUiInput_11B20C4,1,2);return true;}
 // A22EC0 VERIFIED generic owner-routed UI query.
