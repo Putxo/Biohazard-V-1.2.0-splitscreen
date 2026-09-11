@@ -26,6 +26,8 @@ jobs:
             exit 1
           fi
           echo "All ${#sources[@]} src/*.cpp files are included in CMakeLists.txt."
+      - name: Audit canonical native ABI declarations
+        run: python3 tools/audit_native_abi.py
       - name: Configure i686 COFF static library
         run: cmake -S . -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/win32-clang.cmake
       - name: Build
@@ -42,6 +44,7 @@ jobs:
             src
             include
             analysis
+            tools
             CMakeLists.txt
             README.md
           if-no-files-found: error
