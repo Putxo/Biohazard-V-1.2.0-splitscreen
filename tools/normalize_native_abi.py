@@ -53,9 +53,9 @@ for path in sorted(SRC.glob("*.cpp")):
     for old, new in ALIASES.items():
         text = text.replace(old, new)
 
-    # Remove only the individual extern prototype statement.  Do not remove
-    # a whole source line because several old units place multiple extern
-    # declarations on the same line.
+    # Remove only the individual extern prototype statement. Do not remove a
+    # whole source line because several older units place multiple declarations
+    # on the same line.
     for name in CANONICAL:
         pattern = re.compile(
             r"(?m)(?<!\w)extern\s+[^;\n]*\b"
@@ -64,7 +64,7 @@ for path in sorted(SRC.glob("*.cpp")):
         )
         text = pattern.sub("", text)
 
-    # These three callers used an obsolete one-argument C++ alias.  The native
+    # These three callers used an obsolete one-argument C++ alias. The native
     # 76A460 ABI is thiscall: ECX=split, stack x.
     if path.name == "split_table_draw_120.cpp":
         text = text.replace(
@@ -75,6 +75,15 @@ for path in sorted(SRC.glob("*.cpp")):
         text = text.replace(
             "FullCoordTransform_76A460(x)",
             "FullCoordTransform_76A460(split, x)",
+        )
+
+    # Final warning cleanup: the const overload was never selected by any
+    # native reconstruction and only produced -Wunused-function in the strict
+    # Win32 build.
+    if path.name == "split_ui_owner_native_routes_120.cpp":
+        text = text.replace(
+            "static inline const std::uint8_t* Record(const void* self,int index){return B(self)+index*0x70;}\n",
+            "",
         )
 
     if text != original:
