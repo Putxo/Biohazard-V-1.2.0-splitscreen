@@ -43,7 +43,8 @@ This includes:
 - LIN/DE join assignment;
 - UI owner capture and owner-only routing;
 - per-player prompt/device selection;
-- two-player frontend loops.
+- two-player frontend loops;
+- owner-aware command translation at `0x79A570..0x79A614` and `0x79B8F0..0x79BBC6`.
 
 References using displacement `+0x614` on unrelated objects were excluded by base provenance. No confirmed `mKeyboardPlayerNo` consumer found by the final sweep remains unclassified.
 
@@ -63,6 +64,8 @@ Several old `Partial`/`Discovered` entries described entire native parent functi
 The final sweep added the remaining native local-J2/split consumers, including the families around:
 
 - `0x79AB10..0x79AD94` input availability/owner synchronization;
+- `0x79A570..0x79A614` owner-aware local UI command mapping;
+- `0x79B8F0..0x79BBC6` full owner-aware input command mapping;
 - `0x7D7500..0x7D7615` routed prompt/device selection;
 - `0x7DEA10..0x7DF0FF` per-local-player overlay/UI geometry;
 - `0x7DFBA0..0x7DFF5A` two-local-player update loop;
@@ -77,21 +80,25 @@ These sources are part of the current CMake target.
 
 ## Build validation
 
-Final warning/linkage correction commit used for validation:
+A final integration audit found that `src/split_input_command_mapping_120.cpp` was present in `main` but had not been listed in `CMakeLists.txt`. That was corrected in commit:
 
-`1e89b85b0ac1dd614ff0a7921456b205cd73f367`
+`bc146528ab92e0e413749dac0b7b1ee4927bb241`
 
-GitHub Actions:
+The corrected GitHub Actions build:
 
 - workflow: `Static Win32 decomp build`
-- run: **#83**
-- run id: `34571360835`
+- run: **#88**
+- run id: `34572339136`
 - result: **success**
 - compiler: Clang 18 targeting `i686-pc-windows-msvc`
 - C++17 freestanding build with `-Wall -Wextra -Wpedantic`
-- all **123/123** build steps completed and the static archive `libBiohazardV_1.2.0_splitscreen_decomp_win32.a` was produced.
+- all **124/124** build steps completed;
+- `split_input_command_mapping_120.cpp` compiled as object step 20/124;
+- the static archive `libBiohazardV_1.2.0_splitscreen_decomp_win32.a` was produced.
 
-An earlier run exposed six `-Wundefined-internal` warnings in `split_ui_primary_120.cpp`; those declarations were corrected in commit `1e89b85...`. The subsequent run completed without those project-source warnings. The remaining workflow warning concerns GitHub Actions' Node.js runtime deprecation, not this C++ source.
+The earlier six `-Wundefined-internal` warnings in `split_ui_primary_120.cpp` were corrected in commit `1e89b85b0ac1dd614ff0a7921456b205cd73f367`. Run #88 contains no project-source warning; the only workflow warning is GitHub Actions' Node.js runtime deprecation for `actions/checkout@v4`.
+
+To prevent a decompiled source from silently falling outside the build again, commit `6564be5f0c6d2fc974b38a80c97b2dbfd7181fa1` adds a CI pre-build check that enumerates every `src/*.cpp` and fails if any source is absent from `CMakeLists.txt`.
 
 ## Completion statement
 
