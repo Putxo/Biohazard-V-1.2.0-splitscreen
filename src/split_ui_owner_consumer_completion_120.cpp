@@ -6,7 +6,7 @@ extern std::uint8_t* gRoot_12340A4;
 extern std::uint8_t* gInput_1249C40;
 extern void* gUiInput_11B20C4;
 extern bool __thiscall SessionHasLocalCoop_C43BB0(void*);
-extern int __thiscall SessionDisplayStatus_C42D90(void*);
+extern int __thiscall QueryGameStatus_C42D90(void*);
 extern bool __thiscall UiEventBlocked_728C90(void*);
 extern void __thiscall UiCommand4370_7B4370(void*,int,int);
 extern void __thiscall UiCommand4480_7B4480(void*,int,int,int);
@@ -24,7 +24,6 @@ extern std::uint8_t* gUiManager_1234578;
 static inline std::uint8_t* Session(){return *reinterpret_cast<std::uint8_t**>(gRoot_12340A4+0x1042C);}
 static inline int KeyboardPlayer(){return *reinterpret_cast<int*>(gInput_1249C40+0x614);}
 
-// 0x00A02DC0..0x00A02F1C -- exact local-coop command remapper.
 void RouteLocalCoopUiCommand_A02DC0(void* selfRaw,int command,int arg){
     auto* self=static_cast<std::uint8_t*>(selfRaw);
     if(!SessionHasLocalCoop_C43BB0(Session())){UiCommand4370_7B4370(gUiInput_11B20C4,command,arg);return;}
@@ -68,7 +67,6 @@ static_assert(__builtin_offsetof(OwnerRecord120,selection54)==0x54,"owner record
 static_assert(__builtin_offsetof(OwnerManager120,pending)==0x5B80,"owner manager pending");
 static_assert(__builtin_offsetof(OwnerManager120,changed)==0x5B84,"owner manager changed");
 
-// 0x00A037C0..0x00A038EC -- exact local-owner selector update.
 bool UpdateOwnedSelector_A037C0(OwnerManager120* self,OwnerRecord120* rec){
     if(rec->player!=KeyboardPlayer())return false;
     const int code=UiCurrentCode_7B4360(gUiInput_11B20C4,0);
@@ -82,7 +80,7 @@ bool UpdateOwnedSelector_A037C0(OwnerManager120* self,OwnerRecord120* rec){
     if(self->pending==-1 || !UiSelectionChanged_7B4660(gUiInput_11B20C4,0)){self->changed=0;self->pending=-1;return false;}
     const int pending=self->pending;
     const int current=UiGetCursor_7B52A0(gUiInput_11B20C4,0);
-    if(current==pending)return false; // A038B4 -> A038E7 preserves both fields
+    if(current==pending)return false;
     rec->selection54=(pending>=9)?pending-9:pending;
     self->changed=1;
     self->pending=-1;
@@ -101,7 +99,7 @@ void CaptureMenuOwner_A23028(UiOwnerBase120*s){CaptureOwner(s);} void CaptureMen
 
 bool MenuOwnerEventPredicate_A23090(UiOwnerBase120*self,int eventId){
     if(eventId==1){if(!SessionHasLocalCoop_C43BB0(Session()))return false;return KeyboardPlayer()!=self->owner34;}
-    if(eventId==5){if(SessionDisplayStatus_C42D90(Session())!=1)return false;auto* obj=*reinterpret_cast<void**>(gUiManager_1234578+0x3830);return !UiEventBlocked_728C90(obj);}
+    if(eventId==5){if(QueryGameStatus_C42D90(Session())!=1)return false;auto* obj=*reinterpret_cast<void**>(gUiManager_1234578+0x3830);return !UiEventBlocked_728C90(obj);}
     if(eventId==6)return Session()[0x56C]!=0;
     return false;
 }
