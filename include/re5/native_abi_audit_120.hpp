@@ -15,6 +15,12 @@ void __thiscall SetSessionLocalPair_C42A70(void* session,int slot,int value);
 void __thiscall SetSessionPartnerPair_C42A90(void* session,int slot,int value);
 void __thiscall SetSessionAuxPair_C42AB0(void* session,int slot,int value);
 int  __thiscall CountActiveSessionSlots_C42B60(const void* session);
+bool __thiscall IsMercsRow0_C42E80(const void* session);
+bool __thiscall IsMercsRow1_C42EA0(const void* session);
+bool __thiscall IsMercsLocalSplitRow_C42EC0(const void* session);
+bool __thiscall IsDlcRow0_C432E0(const void* session);
+bool __thiscall IsDlcRow1_C43300(const void* session);
+bool __thiscall IsDlcLocalSplitRow_C43320(const void* session);
 bool __thiscall IsNativeLocalCoopActive_C43BB0(const void* session);
 bool __thiscall PreferredOwnerAllowsCurrentKeyboard_799B50(void* input);
 
