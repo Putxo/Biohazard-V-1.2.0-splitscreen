@@ -27,4 +27,4 @@ VA,name,status,scope,evidence
 0x00852B00,SplitScalarMultiplier,Verified,split scalar state,"splitActive selects 2.0 and status-1 applies native second 2.0 multiplier; reconstructed"
 GLOBAL_SPLIT_OBJECT,DirectSplitStateAudit,Verified,audit closure,"91 candidate groups classified by base provenance; no confirmed 0x123457C split-state consumer remains unclassified"
 GLOBAL_KEYBOARD_OWNER,KeyboardPlayerNoAudit,Verified,audit closure,"high-confidence InputManager+0x614 consumers/writers classified by base provenance; unrelated +0x614 collisions excluded"
-BUILD_2026_09_11,StaticWin32Build,Verified,build validation,"commit 1e89b85b0ac1dd614ff0a7921456b205cd73f367; GitHub Actions run 83 id 34571360835; 123/123 build steps success; archive produced"
+BUILD_2026_09_11,StaticWin32Build,Verified,build validation,"commit 1ff76b890bae53ccf9973d3bb58779a8539e3768; GitHub Actions run 212 id 34598435659; 132/132 sources covered; ABI audit and final split/J2 semantic closure audit passed; Win32 static archive produced"
