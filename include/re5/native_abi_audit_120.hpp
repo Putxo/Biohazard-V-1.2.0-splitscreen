@@ -14,11 +14,22 @@ void __thiscall SessionSetDevice_C42A50(void* session,int slot,int device);
 int  __thiscall CountActiveSessionSlots_C42B60(const void* session);
 bool __thiscall IsNativeLocalCoopActive_C43BB0(const void* session);
 bool __thiscall PreferredOwnerAllowsCurrentKeyboard_799B50(void* input);
+
+int  __thiscall SplitCoordTransform_76A420(void* split,int x);
+int  __thiscall FullCoordTransform_76A460(void* split,int x);
+int  __thiscall SplitVerticalTransform_76A4A0(void* split,int y);
+
 void __thiscall UiCommand4370_7B4370(void* ui,int command,int arg);
 void __thiscall UiCommand4480_7B4480(void* ui,int x,int y,int index);
 bool __thiscall UiRoute5620_7B5620(void* ui,int a,int b,int c);
 bool __thiscall UiRoute5750_7B5750(void* ui,int a,int b,int c,int d);
 void __thiscall UiRoute43C0_7B43C0(void* ui,int a,int b);
+int  __thiscall UiGetCursor_7B52A0(void* ui,int index);
+int  __thiscall UiGetSelection_7B5360(void* ui,int index);
+bool __thiscall UiOwnedInput38_7B4660(void* ui,int selector);
+int  __thiscall UiSelectionStep_7B5900(void* ui,int current,int expectedRoute,int count,int minimum,int index);
+int  __thiscall UiSelectionStepBy_7B59B0(void* ui,int current,int expectedRoute,int maximum,int minimum,int step,int index);
+
 void __thiscall RootSetFlags_726120(void* root,std::uint32_t mask);
 void __thiscall SetLocalPlayerActive_716720(void* context,bool active,int slot,int device);
 
