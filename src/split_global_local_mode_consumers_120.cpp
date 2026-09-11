@@ -2,8 +2,6 @@
 namespace re5::split120 {
 struct Session120;
 extern std::uint8_t* gRoot_12340A4;
-extern bool IsMercsLocalSplitRow_C42EC0(const Session120*);
-extern bool IsMercsRow0_C42E80(const Session120*);
 static inline Session120* Session(){return *reinterpret_cast<Session120**>(gRoot_12340A4+0x1042C);} static inline std::uint8_t* SB(Session120*s){return reinterpret_cast<std::uint8_t*>(s);}
 // 71AACE..71AAF3 VERIFIED: row0 and local row2 branch to 71ABC0, bypassing generic network/session checks.
 bool UseMercsImmediateSessionGate_A71AAE6(){Session120*s=Session();return IsMercsRow0_C42E80(s)||IsMercsLocalSplitRow_C42EC0(s);}
