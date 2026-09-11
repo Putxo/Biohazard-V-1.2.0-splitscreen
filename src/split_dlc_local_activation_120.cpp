@@ -6,7 +6,6 @@ struct Session120;
 extern std::uint8_t* gRoot_12340A4;
 extern std::uint8_t* gInput_1249C40;
 extern std::uint8_t* gPlayerRoot_11B2158;
-extern bool IsDlcLocalSplitRow_C43320(const Session120*);
 using CriticalFn120=void(__stdcall*)(void*);
 
 static inline Session120* Session(){return *reinterpret_cast<Session120**>(gRoot_12340A4+0x1042C);}
