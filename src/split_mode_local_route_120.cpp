@@ -3,6 +3,11 @@
 
 namespace re5::split120 {
 
+// Layout audit for the two native objects consumed by C43BB0 and 799B50.
+// The actual executable VAs have one canonical C++ definition each:
+//   C43BB0 -> split_session_mode_predicates_120.cpp
+//   799B50 -> split_input_owner_queries_120.cpp
+// This unit intentionally contains no second implementation of either VA.
 struct SessionLocalRouteView120 {
     std::uint8_t _0000[0x58];
     std::int32_t mode;              // +0x58
@@ -24,44 +29,16 @@ static_assert(__builtin_offsetof(SessionLocalRouteView120, localRouteKind) == 0x
 static_assert(__builtin_offsetof(InputLocalRouteView120, selectedPlayer) == 0x614);
 static_assert(__builtin_offsetof(InputLocalRouteView120, routePlayer) == 0x618);
 
-extern int CountActivePlayers_C42B60(SessionLocalRouteView120* session);
-
-// 0x00C43BB0..0x00C43BF0 -- VERIFIED.
-// Native mode/local-route predicate used by 0x799B50.
-bool IsNativeLocalSplitRoute_C43BB0(SessionLocalRouteView120* session)
+// Typed audit adapters only. They deliberately omit native VA suffixes so they
+// cannot masquerade as additional executable functions in the static archive.
+bool AuditNativeLocalSplitRouteView_120(SessionLocalRouteView120* session)
 {
-    const auto* root = *reinterpret_cast<std::uint8_t**>(0x012340A4);
-    const auto* nativeSession = *reinterpret_cast<SessionLocalRouteView120* const*>(root + 0x1042C);
-    const int mode = nativeSession->mode;
-
-    if ((mode == 2 || mode == 5) && nativeSession->localRouteKind == 2)
-        return true;
-
-    if (mode == 1)
-        return false;
-
-    if (session->blockLocalRoute != 0)
-        return false;
-
-    return CountActivePlayers_C42B60(session) >= 2;
+    return IsNativeLocalCoopActive_C43BB0(session);
 }
 
-// 0x00799B50..0x00799B89 -- VERIFIED.
-// Returns whether the caller may continue through the local-split/input path.
-bool LocalSplitInputPrecheck_799B50(InputLocalRouteView120* self)
+bool AuditLocalSplitInputPrecheckView_120(InputLocalRouteView120* input)
 {
-    auto* root = *reinterpret_cast<std::uint8_t**>(0x012340A4);
-    auto* session = *reinterpret_cast<SessionLocalRouteView120**>(root + 0x1042C);
-
-    if (!IsNativeLocalSplitRoute_C43BB0(session))
-        return true;
-
-    const int routePlayer = self->routePlayer;
-    if (routePlayer < 0)
-        return true;
-
-    auto* input = *reinterpret_cast<InputLocalRouteView120**>(0x01249C40);
-    return routePlayer == input->selectedPlayer;
+    return PreferredOwnerAllowsCurrentKeyboard_799B50(input);
 }
 
 } // namespace re5::split120
