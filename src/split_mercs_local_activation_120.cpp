@@ -5,7 +5,6 @@ namespace re5::split120 {
 struct Session120;
 extern std::uint8_t* gInput_1249C40;
 extern std::uint8_t* gPlayerRoot_11B2158;
-extern void __thiscall SessionSetSlotAux_C42AB0(Session120*, int, int);
 extern bool IsMercsRow1_C42EA0(const Session120*);
 extern bool IsMercsLocalSplitRow_C42EC0(const Session120*);
 
@@ -37,7 +36,7 @@ void SetupMercsSlotLocalState_BF5261(Session120* session, int slot)
 
     *reinterpret_cast<std::uint32_t*>(b + 0x478) |= bit;
     SessionSetSlotMode_C42A30(session, slot, 2);
-    SessionSetSlotAux_C42AB0(session, slot, 0);
+    SetSessionAuxPair_C42AB0(session, slot, 0);
 
     if (IsMercsLocalSplitRow_C42EC0(session) && slot != 0) {
         const int secondaryDevice = *reinterpret_cast<const int*>(b + 0x658);
@@ -51,7 +50,6 @@ void SetupMercsSlotLocalState_BF5261(Session120* session, int slot)
     ResetMercsPerSlotProfileFloat_BF53AC(slot);
 }
 
-// 0xBF522E..0xBF5261 -- exact mask/reset head for the slot loop.
 void BeginMercsLocalSlotSetup_BF522E(Session120* session)
 {
     auto* b = Bytes(session);
@@ -60,8 +58,6 @@ void BeginMercsLocalSlotSetup_BF522E(Session120* session)
     *reinterpret_cast<std::uint32_t*>(b + 0x30) = 0;
 }
 
-// 0xBF546A..0xBF5502 -- exact primary-slot activation and local-split binding
-// tail. primarySlot is the value captured from session+0x5DC at BF505E.
 void ActivateMercsPrimaryLocalSlot_BF546A(Session120* session,
                                           int primarySlot,
                                           int preferredDevice)
@@ -77,8 +73,6 @@ void ActivateMercsPrimaryLocalSlot_BF546A(Session120* session,
         SessionSetDevice_C42A50(session, primarySlot, primaryLocalDevice);
     }
 
-    // Row 1 (not row 2) explicitly assigns keyboard/UI ownership to the
-    // selected primary slot at BF54F6..BF54FC.
     if (IsMercsRow1_C42EA0(session))
         *reinterpret_cast<int*>(gInput_1249C40 + 0x614) = primarySlot;
 
