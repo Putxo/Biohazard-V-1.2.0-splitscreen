@@ -3,7 +3,7 @@ namespace re5::split120 {
 struct SplitState { unsigned char pad[0x3064]; unsigned char active; unsigned char p1[0xb]; float scale; float param; float scale2; float offset; float vertical; unsigned char full; unsigned char transient; };
 struct Display { unsigned char p[0x50]; int w; int h; };
 extern SplitState* gSplit_123457C; extern Display* gDisplay_12345D4; extern unsigned char* gRoot_12340A4; extern unsigned char* gInput_1249C40;
-extern int Status_C42D90(); extern int MapPlayer_76A1E0(SplitState*,int); extern int MapViewport_76A250(SplitState*,int); extern int Y_76A4A0(SplitState*,int); extern int XFull_76A460(SplitState*,int); extern bool EffectiveFull_763170(SplitState*);
+extern int MapPlayer_76A1E0(SplitState*,int); extern int MapViewport_76A250(SplitState*,int); extern bool EffectiveFull_763170(SplitState*);
 extern void* DefaultActor_7E6290(); extern void DrawIndicator_7DDFB0(int,int,float,float,float,int); extern float FrameDelta();
 void UpdateLocalInputIndicator_79BE50(unsigned char* self, bool physicalActivity, bool pairedIndicator)
 {
@@ -19,7 +19,7 @@ void UpdateLocalInputIndicator_79BE50(unsigned char* self, bool physicalActivity
         player=MapPlayer_76A1E0(gSplit_123457C,*reinterpret_cast<int*>(self+0x614));
         viewport=MapViewport_76A250(gSplit_123457C,player);
         if(gSplit_123457C->active && !EffectiveFull_763170(gSplit_123457C)) x=gSplit_123457C->offset+80.f;
-        y=float(Y_76A4A0(gSplit_123457C,int(gSplit_123457C->scale*117.f)));
+        y=float(SplitVerticalTransform_76A4A0(gSplit_123457C,int(gSplit_123457C->scale*117.f)));
         s=gSplit_123457C->scale*30.f;
     } else if(gSplit_123457C->active) x=96.f-gSplit_123457C->offset;
     if(pairedIndicator) resource=0x32;
@@ -33,6 +33,6 @@ struct A5FGeometry { int x; int width; int tail; };
 A5FGeometry ComputeA5FGeometry_A5F79D(bool active,int w,int h){A5FGeometry o{}; o.width=1280; o.x=0;if(active){o.x=0x58;o.width=0xA00;o.tail=int(((float(h)/float(w))*2.3529410362243652f-1.f)*640.f);return o;}float ratio=(float(w)*0.5625f)/float(h); if(ratio>1.f)o.x=int((ratio-1.f)*272.f); return o;}
 float SelectType2AspectScalar_BFB522(bool splitActive,float normalScalar){ return splitActive?1.3235293626785278f:normalScalar; }
 void ApplySplitNodeUniformScale_9F995F(float* xyz){ if(!xyz)return; xyz[0]=xyz[1]=xyz[2]=gSplit_123457C->scale; }
-int ComputeSplitRowY_A22D50(int fallback){ return Status_C42D90()==1?Y_76A4A0(gSplit_123457C,int(gSplit_123457C->scale*144.f)):fallback; }
+int ComputeSplitRowY_A22D50(int fallback){ return Status_C42D90()==1?SplitVerticalTransform_76A4A0(gSplit_123457C,int(gSplit_123457C->scale*144.f)):fallback; }
 int InterpolateSplitWidth_A22DCC(int a,int b){ return a+int(float(b-a)*gSplit_123457C->scale2); }
 }
