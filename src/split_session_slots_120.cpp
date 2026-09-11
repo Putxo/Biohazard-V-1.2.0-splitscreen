@@ -59,9 +59,10 @@ void __thiscall InitLocalCoopSessionSlots_C43A00(SessionSlotState120* s)
     s->transition580=0;
 }
 
-// 0x00C42A30 / 0x00C42A50 -- exact thiscall setters, ret 8.
-void __thiscall SetSessionSlotMode_C42A30(SessionSlotState120* s,int slot,int mode){if(static_cast<unsigned>(slot)<=3u)s->slotMode[slot]=mode;}
-void __thiscall SetSessionSlotDevice_C42A50(SessionSlotState120* s,int slot,int device){if(static_cast<unsigned>(slot)<=3u)s->device[slot]=device;}
+// 0x00C42A30 / 0x00C42A50 -- typed readability wrappers around the canonical
+// opaque implementations in split_session_native_core_120.cpp.
+void SetSessionSlotModeView_C42A30(SessionSlotState120* s,int slot,int mode){SessionSetSlotMode_C42A30(s,slot,mode);}
+void SetSessionSlotDeviceView_C42A50(SessionSlotState120* s,int slot,int device){SessionSetDevice_C42A50(s,slot,device);}
 
 // 0x00C42A70 / A90 / AB0 -- exact thiscall relationship setters, ret 8.
 void __thiscall SetSessionLocalPair_C42A70(SessionSlotState120* s,int slot,int value){if(static_cast<unsigned>(slot)<=3u)s->localPair[slot]=value;}
@@ -71,7 +72,10 @@ void __thiscall SetSessionAuxPair_C42AB0(SessionSlotState120* s,int slot,int val
 static int Pop4(std::uint32_t v){v&=0xFu;return int(v&1u?1:0)+int(v&2u?1:0)+int(v&4u?1:0)+int(v&8u?1:0);}
 // 0x00C42B30 / B60 -- exact ECX-only thiscall counters.
 int __thiscall CountAvailableSessionSlots_C42B30(const SessionSlotState120* s){return Pop4(s->availableMask);}
-int __thiscall CountActiveSessionSlots_C42B60(const SessionSlotState120* s){return Pop4(s->activeMask);}
+int __thiscall CountActiveSessionSlots_C42B60(const void* session){
+    const auto* s=static_cast<const SessionSlotState120*>(session);
+    return Pop4(s->activeMask);
+}
 
 // 0x00C42B90 / BC0 / BF0 -- exact thiscall predicates, ret 4.
 bool __thiscall IsLocalActiveSlot_C42B90(const SessionSlotState120*s,int slot){return (s->availableMask&(1u<<slot))!=0&&s->slotMode[slot]==0;}
