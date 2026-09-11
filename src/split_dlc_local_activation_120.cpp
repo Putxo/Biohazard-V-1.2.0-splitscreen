@@ -9,7 +9,7 @@ extern std::uint8_t* gPlayerRoot_11B2158;
 extern void __thiscall SessionSetSlotMode_C42A30(Session120*,int,int);
 extern void __thiscall SessionSetSlotBinding_C42A50(Session120*,int,int);
 extern void __thiscall SessionSetSlotAux_C42AB0(Session120*,int,int);
-extern bool __thiscall IsDlcLocalSplitSelection_C43320(Session120*);
+extern bool IsDlcLocalSplitRow_C43320(const Session120*);
 using CriticalFn120=void(__stdcall*)(void*);
 
 static inline Session120* Session(){return *reinterpret_cast<Session120**>(gRoot_12340A4+0x1042C);}
@@ -48,7 +48,7 @@ void PrepareDlcLocalPlayers_BF5888(int primarySlot){
  const int preferred=*reinterpret_cast<const int*>(gInput_1249C40+0x5D8);
  SessionSetSlotBinding_C42A50(session,primarySlot,preferred);
 
- if(IsDlcLocalSplitSelection_C43320(session)){
+ if(IsDlcLocalSplitRow_C43320(session)){
    const int first=*reinterpret_cast<const int*>(bytes+0x654);
    const int second=*reinterpret_cast<const int*>(bytes+0x658);
    SessionSetSlotBinding_C42A50(session,primarySlot,first);
