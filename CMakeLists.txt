@@ -52,6 +52,7 @@ add_library(re5_split120 STATIC
     src/split_trial_split_120.cpp
     src/split_trial_join_device_120.cpp
     src/split_session_slots_120.cpp
+    src/split_session_native_core_120.cpp
     src/split_session_local_binding_reset_120.cpp
     src/split_pregame_two_slot_120.cpp
     src/split_mode_pregame_120.cpp
