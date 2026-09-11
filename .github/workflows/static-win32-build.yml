@@ -34,3 +34,15 @@ jobs:
         run: |
           file build/* || true
           find build -maxdepth 2 -type f \( -name '*.a' -o -name '*.lib' \)
+      - name: Upload decomp source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: decomp-source-snapshot
+          path: |
+            src
+            include
+            analysis
+            CMakeLists.txt
+            README.md
+          if-no-files-found: error
+          retention-days: 7
