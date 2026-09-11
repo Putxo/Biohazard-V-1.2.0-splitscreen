@@ -28,6 +28,7 @@ add_library(re5_split120 STATIC
     src/split_input_availability_120.cpp
     src/split_input_command_mapping_120.cpp
     src/split_routed_prompt_120.cpp
+    src/split_ui_input_mask_9e1d4d_120.cpp
     src/split_prompt_code_dispatch_120.cpp
     src/split_prompt_symbol_selection_120.cpp
     src/split_preferred_device_owner_binding_120.cpp
