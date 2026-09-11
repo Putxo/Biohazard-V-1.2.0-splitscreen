@@ -5,29 +5,11 @@ namespace re5::split120 {
 struct Session120;
 extern std::uint8_t* gInput_1249C40;
 extern std::uint8_t* gPlayerRoot_11B2158;
-extern void SessionSetSlotMode_C42A30(Session120*, int, int);
-extern void SessionSetDevice_C42A50(Session120*, int, int);
-extern void SessionSetSlotAux_C42AB0(Session120*, int, int);
+extern void __thiscall SessionSetSlotAux_C42AB0(Session120*, int, int);
+extern bool IsMercsRow1_C42EA0(const Session120*);
+extern bool IsMercsLocalSplitRow_C42EC0(const Session120*);
 
 static inline std::uint8_t* Bytes(Session120* p) { return reinterpret_cast<std::uint8_t*>(p); }
-static inline const std::uint8_t* Bytes(const Session120* p) { return reinterpret_cast<const std::uint8_t*>(p); }
-
-// 0xC42EA0..0xC42EBA and 0xC42EC0..0xC42EDA -- exact row predicates.
-bool IsMercsOrReunionRow1_C42EA0(const Session120* session)
-{
-    const auto* b = Bytes(session);
-    const std::int32_t mode = *reinterpret_cast<const std::int32_t*>(b + 0x58);
-    return (mode == 2 || mode == 5) &&
-           *reinterpret_cast<const std::int32_t*>(b + 0x5CC) == 1;
-}
-
-bool IsMercsOrReunionLocalSplit_C42EC0(const Session120* session)
-{
-    const auto* b = Bytes(session);
-    const std::int32_t mode = *reinterpret_cast<const std::int32_t*>(b + 0x58);
-    return (mode == 2 || mode == 5) &&
-           *reinterpret_cast<const std::int32_t*>(b + 0x5CC) == 2;
-}
 
 // 0xBF53AC..0xBF5401 -- exact per-slot profile-state reset performed by the
 // Mercs/Reunion setup loop. The native address expression is preserved instead
@@ -40,10 +22,6 @@ void ResetMercsPerSlotProfileFloat_BF53AC(int slot)
 }
 
 // 0xBF5261..0xBF5334 -- exact local/session part of the four-slot setup loop.
-// session+0x620[slot] controls whether the slot participates. Participating
-// slots are made available and start in mode 2, not mode 1. In local-split row
-// 2, every participating non-zero slot whose secondary binding is valid is
-// promoted to active mode 0 and bound to session+0x658.
 void SetupMercsSlotLocalState_BF5261(Session120* session, int slot)
 {
     auto* b = Bytes(session);
@@ -61,7 +39,7 @@ void SetupMercsSlotLocalState_BF5261(Session120* session, int slot)
     SessionSetSlotMode_C42A30(session, slot, 2);
     SessionSetSlotAux_C42AB0(session, slot, 0);
 
-    if (IsMercsOrReunionLocalSplit_C42EC0(session) && slot != 0) {
+    if (IsMercsLocalSplitRow_C42EC0(session) && slot != 0) {
         const int secondaryDevice = *reinterpret_cast<const int*>(b + 0x658);
         if (secondaryDevice >= 0) {
             *reinterpret_cast<std::uint32_t*>(b + 0x47C) |= bit;
@@ -94,14 +72,14 @@ void ActivateMercsPrimaryLocalSlot_BF546A(Session120* session,
     SessionSetSlotMode_C42A30(session, primarySlot, 0);
     SessionSetDevice_C42A50(session, primarySlot, preferredDevice);
 
-    if (IsMercsOrReunionLocalSplit_C42EC0(session)) {
+    if (IsMercsLocalSplitRow_C42EC0(session)) {
         const int primaryLocalDevice = *reinterpret_cast<const int*>(b + 0x654);
         SessionSetDevice_C42A50(session, primarySlot, primaryLocalDevice);
     }
 
     // Row 1 (not row 2) explicitly assigns keyboard/UI ownership to the
     // selected primary slot at BF54F6..BF54FC.
-    if (IsMercsOrReunionRow1_C42EA0(session))
+    if (IsMercsRow1_C42EA0(session))
         *reinterpret_cast<int*>(gInput_1249C40 + 0x614) = primarySlot;
 
     *reinterpret_cast<int*>(b + 0x18) = 6;
@@ -109,10 +87,6 @@ void ActivateMercsPrimaryLocalSlot_BF546A(Session120* session,
     *reinterpret_cast<int*>(b + 0x2C) = 9;
 }
 
-// Convenience reconstruction of the complete local/session slot mechanics of
-// BF522E..BF5502. Generic stage/profile configuration in the same parent
-// routine remains in its own subsystem and is intentionally not mislabeled as
-// split-screen code.
 void PrepareMercsLocalPlayers_BF522E(Session120* session,
                                      int primarySlot,
                                      int preferredDevice)
