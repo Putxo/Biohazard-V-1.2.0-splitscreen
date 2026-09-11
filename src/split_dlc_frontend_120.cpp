@@ -39,12 +39,10 @@ void CommitDlcThreeWayModeSelection_A52DD4(std::int32_t selected)
     *reinterpret_cast<std::int32_t*>(Bytes(session) + 0x5CC) = selected;
 }
 
-// 0x00C43BB0..0x00C43BF0 -- exact behavior relevant to DLC.
-// Unlike modes 2/5, modes 3/4 have no +0x5CC==2 early special-case here.
-// They continue through the normal local-player-count path (unless +0x56C is
-// set), so +0x5CC remains a frontend selection value while local readiness is
-// decided by the session's active local-player state.
-bool DlcUsesGenericLocalCountPath_C43BB0(std::int32_t mode)
+// Semantic audit fact derived from the canonical C43BB0 branches. This is NOT
+// a second implementation of VA C43BB0: modes 3/4 fall through its generic
+// active-local-player count path rather than the modes-2/5 row-2 early return.
+bool DlcUsesGenericLocalCountPath_120(std::int32_t mode)
 {
     return mode == 3 || mode == 4;
 }
