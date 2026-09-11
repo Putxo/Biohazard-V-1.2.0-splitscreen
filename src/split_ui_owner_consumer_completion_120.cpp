@@ -52,8 +52,19 @@ void RouteLocalCoopUiCommand_A02DC0(void* selfRaw,int command,int arg){
     UiCommand4370_7B4370(gUiInput_11B20C4,command,arg);
 }
 
-bool OwnerFilteredUiCommand_A02F20(int command,int player){return PreferredOwnerAllowsCurrentKeyboard_799B50(gInput_1249C40)&&InputCommand_799B90(gInput_1249C40,command,player);}
-bool OwnerFilteredUiCommandAlt_A02F40(int command,int player){return PreferredOwnerAllowsCurrentKeyboard_799B50(gInput_1249C40)&&InputCommandAlt_799C80(gInput_1249C40,command,player);}
+// 0x00A02F20..0x00A02F3C -- exact stack-only wrapper, RET 8.
+// Native ignores caller ECX, gates through 799B50, then tail-jumps 799B90.
+bool __stdcall OwnerFilteredUiCommand_A02F20(int command,int player){
+    return PreferredOwnerAllowsCurrentKeyboard_799B50(gInput_1249C40) &&
+           InputCommand_799B90(gInput_1249C40,command,player);
+}
+
+// 0x00A02F40..0x00A02F5C -- exact stack-only wrapper, RET 8.
+// Same owner precheck, but successful path tail-jumps 799C80.
+bool __stdcall OwnerFilteredUiCommandAlt_A02F40(int command,int player){
+    return PreferredOwnerAllowsCurrentKeyboard_799B50(gInput_1249C40) &&
+           InputCommandAlt_799C80(gInput_1249C40,command,player);
+}
 
 bool ArbitrateSiblingSelection_A01ABF(std::int8_t recordPlayer,int recordSelection,int siblingSelection,int selected,bool helperNonZero){
     if(!SessionHasLocalCoop_C43BB0(Session())||!helperNonZero)return true;
