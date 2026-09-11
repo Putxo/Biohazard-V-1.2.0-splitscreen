@@ -12,7 +12,9 @@ std::uint16_t ResolveRoutedPromptCode_7D7500(void* selfRaw,std::uint16_t code,in
  if(QueryGameStatus_C42D90(Session())==1) owner=(selection!=ResolveSplitPlayer_76A1E0(gSplit_123457C,0));
  else if(SessionHasLocalCoop_C43BB0(Session())) owner=PreferredOwnerAllowsCurrentKeyboard_799B50(gInput_1249C40)?*reinterpret_cast<int*>(gInput_1249C40+0x614):(*reinterpret_cast<int*>(gInput_1249C40+0x614)^1);
  if(InputOwnerModeGate_799AF0(gInput_1249C40,owner)==0){
-   if(gPlayerManager_11B27DC) if(void*a=FindDefaultPlayerActor_7E6290(gPlayerManager_11B27DC)) if(void*p=PlayerPromptObject_B5C430(a)) return TranslatePlayerPrompt_C6DE10(p,code,0,0);
+   // Native 0x7D7595 loads gPlayerManager directly and calls 0x7E6290; there
+   // is deliberately no pre-null check on the global manager pointer here.
+   if(void*a=FindDefaultPlayerActor_7E6290(gPlayerManager_11B27DC)) if(void*p=PlayerPromptObject_B5C430(a)) return TranslatePlayerPrompt_C6DE10(p,code,0,0);
    return code;
  }
  if(gInput_1249C40[0x61C]==0||code!=0x0B)return code;
