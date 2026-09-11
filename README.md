@@ -39,9 +39,12 @@ The final sweep covers:
 - direct consumers of the split-state object at `0x0123457C`, including `+0x3064..+0x3085`;
 - Default/Full viewport and coordinate helpers;
 - split HUD, prompts, menu geometry, resources, cursor, projection, aspect correction and hit testing;
-- remaining direct split consumers found by the expanded binary sweep.
+- remaining direct split consumers found by the expanded binary sweep;
+- canonical native ABI cleanup and final split/J2 semantic side-effect reconciliation.
 
 The expanded split-state audit classified **91 candidate instruction groups by base provenance**; no confirmed direct split-object consumer found by that audit remains unclassified. The corresponding high-confidence `InputManager+0x614` ownership sweep is likewise classified, with unrelated displacement collisions excluded.
+
+The last semantic closure pass also restored the verified native `0xA4AE73 -> 0x7B43C0` Mercenaries frontend completion side effect and reconciled stale stage-analysis documents with the authoritative final manifest.
 
 Final audit:
 
@@ -50,9 +53,11 @@ Final audit:
 
 ### Build validation
 
-Commit `1e89b85b0ac1dd614ff0a7921456b205cd73f367` passed GitHub Actions **Static Win32 decomp build #83** (`run id 34571360835`).
+Commit `1ff76b890bae53ccf9973d3bb58779a8539e3768` passed GitHub Actions **Static Win32 decomp build #212** (`run id 34598435659`).
 
-The target is built with Clang 18 for `i686-pc-windows-msvc`, C++17 freestanding mode and `-Wall -Wextra -Wpedantic`. All **123/123** build steps completed and the static archive was produced.
+The target is built for `i686-pc-windows-msvc` in C++17 freestanding mode with `-Wall -Wextra -Wpedantic`. All **132/132** decomp source files are present in the CMake build graph, the canonical native ABI audit passes, the final split/J2 semantic closure audit passes, and the static archive is produced successfully.
+
+CI now guards both build coverage and semantic closure. It rejects stale ABI aliases/redeclarations, unfinished active-source markers, non-closed authoritative manifest entries, stale open-status statements in resolved stage documents, and loss of the verified Mercenaries completion side effect.
 
 This status means the **static/decompilation scope is closed**. It does **not** claim runtime certification in the real Windows/DirectX game. Runtime testing of Story, LIN/DE, Mercs/Reunion, controller/keyboard combinations, Default/Full layouts, aspect changes, leave/rejoin and persistence remains a separate validation phase.
 
