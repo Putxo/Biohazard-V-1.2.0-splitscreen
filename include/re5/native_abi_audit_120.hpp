@@ -4,9 +4,9 @@
 namespace re5::split120 {
 
 // Canonical native ABIs verified against re5dx9 1.2.0 disassembly.
-// This header is force-included by the static audit build so any translation
-// unit that redeclares one of these symbols with a different calling convention
-// or parameter list fails at compile time.
+// This header is force-included by the static audit build so translation units
+// share one ABI for each native VA. Older descriptive names below are explicit
+// inline adapters, never independent external/native symbols.
 
 int  __thiscall QueryGameStatus_C42D90(void* session);
 void __thiscall SessionSetSlotMode_C42A30(void* session,int slot,int value);
@@ -19,17 +19,33 @@ void __thiscall UiRoute43C0_7B43C0(void* ui,int a,int b);
 void __thiscall RootSetFlags_726120(void* root,std::uint32_t mask);
 void __thiscall SetLocalPlayerActive_716720(void* context,bool active,int slot,int device);
 
-// Audited compatibility adapters for early translation units that used
-// convenience overloads before the exact native ABI was recovered. They are
-// deliberately inline so no fake external symbol survives into the archive.
 static inline void* NativeSession_120(){
     auto* root=*reinterpret_cast<std::uint8_t**>(0x012340A4);
     return *reinterpret_cast<void**>(root+0x1042C);
 }
-static inline int QueryGameStatus_C42D90(){
-    return QueryGameStatus_C42D90(NativeSession_120());
-}
-static inline void __stdcall SetLocalPlayerActive_716720(bool active,int slot,int device){
+
+// C42D90 compatibility names used by older decomp units.
+inline int QueryGameStatus_C42D90(){return QueryGameStatus_C42D90(NativeSession_120());}
+inline int GetRuntimeStatus_C42D90(void* session){return QueryGameStatus_C42D90(session);}
+inline int GetRuntimeStatus_C42D90(){return QueryGameStatus_C42D90(NativeSession_120());}
+inline int SessionDisplayStatus_C42D90(void* session){return QueryGameStatus_C42D90(session);}
+inline int SessionStatus_C42D90(void* session){return QueryGameStatus_C42D90(session);}
+inline int Status_C42D90(){return QueryGameStatus_C42D90(NativeSession_120());}
+
+// C42A30/C42A50 compatibility names. The canonical implementations are the
+// SessionSet* forms above; these wrappers preserve early source readability.
+inline void __thiscall SetSessionSlotMode_C42A30(void* session,int slot,int value){SessionSetSlotMode_C42A30(session,slot,value);}
+inline void __thiscall SetSessionSlotDevice_C42A50(void* session,int slot,int device){SessionSetDevice_C42A50(session,slot,device);}
+inline void __thiscall SessionSetSlotBinding_C42A50(void* session,int slot,int device){SessionSetDevice_C42A50(session,slot,device);}
+
+// 7B4370/7B4480 compatibility names used by geometry/front-end units.
+inline void InputBaseUpdate_7B4370(void* ui,int command,int arg){UiCommand4370_7B4370(ui,command,arg);}
+inline void UiCommand_7B4370(void* ui,int command,int arg){UiCommand4370_7B4370(ui,command,arg);}
+inline void InputSplitOffset_7B4480(void* ui,int x,int y,int index){UiCommand4480_7B4480(ui,x,y,index);}
+inline void ApplyUiInputOffset_7B4480(void* ui,int x,int y,int index){UiCommand4480_7B4480(ui,x,y,index);}
+
+// Audited convenience form used by older local-activation units.
+inline void __stdcall SetLocalPlayerActive_716720(bool active,int slot,int device){
     SetLocalPlayerActive_716720(nullptr,active,slot,device);
 }
 
