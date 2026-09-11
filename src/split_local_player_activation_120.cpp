@@ -5,9 +5,14 @@ extern void __thiscall SessionSetDevice_C42A50(void*,int,int);
 extern void __thiscall RefreshPlayerDevice_7E62F0(void*,int);
 extern void __thiscall SetEventRequest_7F1610(void*,int,int);
 
-// 0x00716720..0x00716802 -- exact native ABI and semantics.
-// ECX is not consumed. Stack args = active, slot, device; native returns ret 0x0C.
-void __stdcall SetLocalPlayerActive_716720(bool active,int slot,int device){
+// 0x00716720..0x00716802 -- exact native semantics and call shape.
+// Native callers load ECX with a context/object pointer and push three stack
+// arguments: active, slot, device. The body itself does not dereference ECX,
+// but the call sites are unambiguously thiscall-shaped and the callee returns
+// with ret 0x0C. Keep the unused `context` so the reconstructed ABI matches
+// those callers exactly instead of treating the routine as stdcall.
+void __thiscall SetLocalPlayerActive_716720(void* context,bool active,int slot,int device){
+ (void)context;
  auto* root=*reinterpret_cast<std::uint8_t**>(0x012340A4);
  auto* session=*reinterpret_cast<std::uint8_t**>(root+0x1042C);
  const std::uint32_t bit=1u<<slot;
