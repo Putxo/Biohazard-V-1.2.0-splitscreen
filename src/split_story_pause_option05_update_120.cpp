@@ -9,10 +9,10 @@ struct PauseOption05RoutingView120 {
 
 extern std::uint8_t* gInput_1249C40;
 extern void* gUiInput_11B20C4;
-extern bool UiRoute5750_7B5750(void*, int, int, int, int);
-extern int UiRoute5360_7B5360(void*, int);
-extern bool UiRoute5620_7B5620(void*, int, int, int);
-extern int UiRoute59B0_7B59B0(void*, int, int, int, int, int, int);
+extern bool __thiscall UiRoute5750_7B5750(void*, int, int, int, int);
+extern int __thiscall UiGetSelection_7B5360(void*, int);
+extern bool __thiscall UiRoute5620_7B5620(void*, int, int, int);
+extern int __thiscall UiSelectionStepBy_7B59B0(void*, int, int, int, int, int, int);
 
 static inline bool IsOwningLocalPlayer(const PauseOption05RoutingView120* self)
 {
@@ -24,7 +24,7 @@ bool Option05OwnerRoute6RequiresFreeSlot_A2B7B5(const PauseOption05RoutingView12
 {
     if (!IsOwningLocalPlayer(self)) return false;
     if (!UiRoute5750_7B5750(gUiInput_11B20C4, 0, 6, 0, 0)) return false;
-    return UiRoute5360_7B5360(gUiInput_11B20C4, 1) == -1;
+    return UiGetSelection_7B5360(gUiInput_11B20C4, 1) == -1;
 }
 
 // 0x00A2B81C..0x00A2B84E -- VERIFIED duplicate ownership gate.
@@ -32,7 +32,7 @@ bool Option05OwnerRoute6Cancel_A2B81C(const PauseOption05RoutingView120* self)
 {
     if (!IsOwningLocalPlayer(self)) return false;
     if (!UiRoute5750_7B5750(gUiInput_11B20C4, 0, 6, 0, 0)) return false;
-    return UiRoute5360_7B5360(gUiInput_11B20C4, 1) == -1;
+    return UiGetSelection_7B5360(gUiInput_11B20C4, 1) == -1;
 }
 
 // 0x00A2B8C9..0x00A2B8ED -- VERIFIED.
@@ -45,7 +45,7 @@ bool Option05OwnerCancelRoute7_A2B8C9(const PauseOption05RoutingView120* self)
 int Option05OwnerSelectionRoute26_A2B923(const PauseOption05RoutingView120* self, int fallbackMetric)
 {
     if (!IsOwningLocalPlayer(self)) return fallbackMetric;
-    return UiRoute59B0_7B59B0(gUiInput_11B20C4, fallbackMetric, 0, 0x26, 0, 1, 2);
+    return UiSelectionStepBy_7B59B0(gUiInput_11B20C4, fallbackMetric, 0, 0x26, 0, 1, 2);
 }
 
 // 0x00A2B98A..0x00A2B9B0 -- VERIFIED.
@@ -82,7 +82,7 @@ bool Option05OwnerCancelRoute7Late_A2BFCD(const PauseOption05RoutingView120* sel
 int Option05OwnerSelectionRoute4_A2C033(const PauseOption05RoutingView120* self, int fallbackMetric)
 {
     if (!IsOwningLocalPlayer(self)) return fallbackMetric;
-    return UiRoute59B0_7B59B0(gUiInput_11B20C4, fallbackMetric, 0, 4, 0, 1, 2);
+    return UiSelectionStepBy_7B59B0(gUiInput_11B20C4, fallbackMetric, 0, 4, 0, 1, 2);
 }
 
 // 0x00A2C099..0x00A2C0BD -- VERIFIED.
