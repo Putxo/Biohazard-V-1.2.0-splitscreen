@@ -10,6 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Verify every decomp source is built
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t sources < <(find src -maxdepth 1 -type f -name '*.cpp' -printf '%p\n' | sort)
+          missing=0
+          for source in "${sources[@]}"; do
+            if ! grep -Fq "$source" CMakeLists.txt; then
+              echo "ERROR: source not listed in CMakeLists.txt: $source"
+              missing=1
+            fi
+          done
+          if (( missing != 0 )); then
+            exit 1
+          fi
+          echo "All ${#sources[@]} src/*.cpp files are included in CMakeLists.txt."
       - name: Configure i686 COFF static library
         run: cmake -S . -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/win32-clang.cmake
       - name: Build
@@ -17,4 +33,4 @@ jobs:
       - name: Inspect archive
         run: |
           file build/* || true
-          find build -maxdepth 2 -type f -name '*.a' -o -name '*.lib'
+          find build -maxdepth 2 -type f \( -name '*.a' -o -name '*.lib' \)
