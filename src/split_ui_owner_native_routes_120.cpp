@@ -21,7 +21,6 @@ static inline std::int32_t I32(const void* p,std::uint32_t off){return *reinterp
 static inline std::int32_t& I32(void* p,std::uint32_t off){return *reinterpret_cast<std::int32_t*>(B(p)+off);}
 static inline std::uint8_t& U8(void* p,std::uint32_t off){return *(B(p)+off);}
 static inline std::uint8_t* Record(void* self,int index){return B(self)+index*0x70;}
-static inline const std::uint8_t* Record(const void* self,int index){return B(self)+index*0x70;}
 
 // 0x7B4210 / 0x7B42A0. These are the first two owner-gated mask queries in
 // the direct-799B50 family. mode 0/1/2 selects table +40/+38/+44.
