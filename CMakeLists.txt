@@ -38,6 +38,7 @@ add_library(re5_split120 STATIC
     src/split_ui_owner_route_sites_120.cpp
     src/split_ui_owner_consumer_completion_120.cpp
     src/split_ui_input_base_120.cpp
+    src/split_ui_owner_native_base_120.cpp
     src/split_state13_120.cpp
     src/split_story_pause_records_120.cpp
     src/split_story_pause_initializer_120.cpp
