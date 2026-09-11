@@ -20,7 +20,6 @@ struct MercsFrontend120 {
     std::int32_t localJoinDeviceOverride;
 };
 
-extern bool IsMercsLocalSplitRow_C42EC0(const Session120*);
 extern bool DeviceOverrideAllowed_7F1390(void*, int device, int zero);
 extern void SelectInputDevice_7B66E0(void*, int device);
 extern void* gPlayerState_11B2158;
