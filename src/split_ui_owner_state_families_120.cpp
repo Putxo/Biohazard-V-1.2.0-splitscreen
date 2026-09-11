@@ -4,11 +4,11 @@ extern std::uint8_t* gInput_1249C40;
 static inline int KeyboardOwner(){return *reinterpret_cast<const int*>(gInput_1249C40+0x614);}
 static inline bool IsOwner(int objectOwner){return objectOwner==KeyboardOwner();}
 
-// These are the exact owner comparisons embedded in the A29xxx..A2Cxxx UI
-// state machines. The surrounding animation/resource code is unrelated; the
-// local-J2 semantic at every listed VA is exactly object+0x34 == input+0x614.
-// Each wrapper keeps a concrete symbol/callsite in the native decomp rather
-// than silently absorbing dozens of ownership branches into a generic note.
+// Exact owner comparisons whose complete local-J2 effect is to gate the
+// immediately following owner-only UI query/commit path in the surrounding
+// A29xxx..A2Cxxx state machine.  Sites with additional arithmetic/device/
+// visibility semantics are deliberately NOT represented here; they live in
+// dedicated reconstructed helpers instead.
 #define OWNER_SITE(name,va) bool name(int objectOwner){return IsOwner(objectOwner);} /* va */
 OWNER_SITE(Owner_A29DAC,0x00A29DAC)
 OWNER_SITE(Owner_A29E3D,0x00A29E3D)
@@ -23,11 +23,9 @@ OWNER_SITE(Owner_A2AACA,0x00A2AACA)
 OWNER_SITE(Owner_A2AB00,0x00A2AB00)
 OWNER_SITE(Owner_A2AB2F,0x00A2AB2F)
 OWNER_SITE(Owner_A2AB57,0x00A2AB57)
-OWNER_SITE(Owner_A2AC1D,0x00A2AC1D)
 OWNER_SITE(Owner_A2AF99,0x00A2AF99)
 OWNER_SITE(Owner_A2AFE1,0x00A2AFE1)
 OWNER_SITE(Owner_A2B018,0x00A2B018)
-OWNER_SITE(Owner_A2B102,0x00A2B102)
 OWNER_SITE(Owner_A2B42F,0x00A2B42F)
 OWNER_SITE(Owner_A2B4A8,0x00A2B4A8)
 OWNER_SITE(Owner_A2B4E2,0x00A2B4E2)
@@ -45,17 +43,11 @@ OWNER_SITE(Owner_A2C03C,0x00A2C03C)
 OWNER_SITE(Owner_A2C0A2,0x00A2C0A2)
 OWNER_SITE(Owner_A2C0D2,0x00A2C0D2)
 OWNER_SITE(Owner_A2C3EB,0x00A2C3EB)
-OWNER_SITE(Owner_A2D4FD,0x00A2D4FD)
-OWNER_SITE(Owner_A2E2CB,0x00A2E2CB)
-OWNER_SITE(Owner_A2F00D,0x00A2F00D)
-OWNER_SITE(Owner_A2F098,0x00A2F098)
 #undef OWNER_SITE
 
-// Native recurring patterns recovered around those callsites:
-// - owner-only 0x7B5620/0x7B5750 navigation queries;
-// - owner-only 0x799B90 command 0x5A fallback;
-// - owner-only 0x7B5900 selection commit;
-// - non-owner paths retain their prior cursor/value instead of consuming the
-//   keyboard/UI event. These predicates are therefore the complete J2-specific
-//   semantic of the corresponding surrounding state-machine branches.
+// Non-predicate sites moved to dedicated exact helpers:
+// A2AC1D/A2B102  -> local-player 0.3/0.7 anchor geometry
+// A2D4FD          -> preferred-device/session-slot resolution
+// A2E2CB          -> owner-sensitive UI-state dispatch
+// A2F00D/A2F098   -> owner-sensitive alpha suppression
 } // namespace re5::split120
