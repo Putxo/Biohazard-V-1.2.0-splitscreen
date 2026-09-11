@@ -46,7 +46,7 @@ The same rdata neighborhood contains `extra_01`, `extra_02`, `top50..top57`, con
 
 Its independent three-way selector `0xA52CB0..0xA52DFC` writes `self+0x190` to `session+0x5CC` at `0xA52DD4` after bitmask validation.
 
-The exact meaning of rows 0/1/2 inside this Extra/DLC selector still needs to be tied to the Lost in Nightmares / Desperate Escape local-coop presentation by following its stage/lobby-specific branches. No row label is assigned here without that final trace.
+The later LIN/DE selector audit closes the row semantics required by this repository: row 2 is unconditionally enabled by `0x76A410`, is navigable, and is committed unchanged as `session+0x5CC == 2`. The visible localized row label is not embedded at this instruction site, but the binary-side local/split route semantics are complete.
 
 ## Resource archive mode cross-check
 
@@ -61,4 +61,4 @@ This independently matches the Extra1/Extra2 DLC and Merce2/Reunion resource fam
 
 ## Build check
 
-Updated `src/split_frontend_mode_selection_120.cpp` standalone cross-compiles successfully with Clang as Intel i386 COFF.
+The frontend identity and row-semantic reconstruction is included in the full Win32 static build and final split/J2 audit.
