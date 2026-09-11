@@ -41,7 +41,7 @@ No confirmed `mKeyboardPlayerNo` consumer found by the final sweep remains uncla
 
 ## Exact 0x799B50 direct-caller closure
 
-The reference executable contains exactly **40 direct CALL instructions to `0x00799B50`**. They were re-enumerated directly from the reference binary and are now mapped one-for-one in:
+The reference executable contains exactly **40 direct CALL instructions to `0x00799B50`**. They were re-enumerated directly from the reference binary and are mapped one-for-one in:
 
 `analysis/799b50_direct_callers_manifest_2026-09-11.csv`
 
@@ -57,11 +57,15 @@ Those last five entries deliberately reconstruct only the verified owner-gated f
 
 Result: **40/40 direct `0x799B50` callers represented and classified.**
 
-## Canonical native-address cleanup
+## Canonical native-address and semantic cleanup
 
-The audit also removed false source duplication where a single native VA had accumulated multiple C++ implementations under descriptive aliases. Native `C42B60`, `C43BB0` and `799B50` now each have one canonical external implementation; historical names are inline adapters in `include/re5/native_abi_audit_120.hpp`.
+The audit removed false source duplication where a single native VA had accumulated multiple C++ implementations under descriptive aliases. Native `C42B60`, `C43BB0` and `799B50` now each have one canonical external implementation; historical names are inline adapters in `include/re5/native_abi_audit_120.hpp`.
 
-`0x7B43C0` was also corrected from an analysis helper signature that passed synthetic gate/overlay/coordinate arguments to its real native ABI: ECX=self, two stack arguments, `RET 8`, with the owner gate and global state read internally.
+`0x7B43C0` was corrected from an analysis helper signature that passed synthetic gate/overlay/coordinate arguments to its real native ABI: ECX=self, two stack arguments, `RET 8`, with the owner gate and global state read internally.
+
+The final semantic sweep also caught and fixed the last split-relevant omission in `0xA4AE73`: the Mercenaries frontend completion path now performs the native `0x7B43C0` routed UI/input reset after setting `self+0x3C = 1`, matching the verified executable tail instead of leaving that side effect as a comment-only note.
+
+Stale stage-analysis documents that still described already-closed items as `Partial`, `not yet proved`, or future targets were refreshed to match the authoritative final manifest.
 
 ## Parent-family closure
 
@@ -92,25 +96,25 @@ The current source covers the native local-J2/split families around:
 
 ## Current build validation
 
-GitHub Actions validation after the strict `799B50` closure:
+Final GitHub Actions validation after ABI cleanup, semantic closure, documentation reconciliation and the new closure guard:
 
 - workflow: `Static Win32 decomp build`
-- run: **#166**
-- run id: `34592518819`
-- head: `566e8c18dc7088d88ea3eab62d2e5f4ab42e1dd3`
+- run: **#212**
+- run id: `34598435659`
+- head: `1ff76b890bae53ccf9973d3bb58779a8539e3768`
 - result: **success**
 - source/CMake coverage check: **132/132 `src/*.cpp` files listed in CMake**
+- canonical native ABI audit: **passed**
+- final split/J2 semantic closure audit: **passed**
 - compiler target: i686 Win32 COFF static library
 - C++17 freestanding build with `-Wall -Wextra -Wpedantic`
 - archive inspection passed;
 - source snapshot artifact uploaded successfully.
 
-The run's source snapshot was independently inspected after CI: it contains all 132 C++ source files, all 132 are included by CMake, and the expected local-J2/split field families remain present.
-
-CI contains a pre-build guard that fails if any `src/*.cpp` is omitted from `CMakeLists.txt`, preventing a decompiled source from silently falling outside the build.
+CI contains both a build-graph guard and a final semantic closure guard. The latter rejects unfinished markers in active source, stale open-status statements in the resolved stage documents, non-closed entries in the authoritative final manifest, and loss of the verified `0xA4AE73 -> 0x7B43C0` completion side effect.
 
 ## Completion statement
 
-Within the repository's stated scope — **the executable-side RE5 1.2.0 native implementation of local J2 and split-screen** — the final static audit has no known confirmed split-object, `mKeyboardPlayerNo`, or direct `0x799B50` reference left unclassified.
+Within the repository's stated scope — **the executable-side RE5 1.2.0 native implementation of local J2 and split-screen** — the final static audit has no known confirmed split-object, `mKeyboardPlayerNo`, direct `0x799B50` reference, ABI conflict, or verified split-relevant semantic side effect left unclassified or unrepresented.
 
 This is a decompilation/static-analysis completion statement, **not** a claim that every path has been runtime-tested in the real Windows/DirectX game. Runtime testing remains the separate functional-certification phase for Story, LIN/DE, Mercs/Reunion, keyboard/controller combinations, Default/Full layouts, aspect changes, leave/rejoin and persistence.
