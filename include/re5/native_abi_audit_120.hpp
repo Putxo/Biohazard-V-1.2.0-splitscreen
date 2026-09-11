@@ -11,6 +11,9 @@ namespace re5::split120 {
 int  __thiscall QueryGameStatus_C42D90(void* session);
 void __thiscall SessionSetSlotMode_C42A30(void* session,int slot,int value);
 void __thiscall SessionSetDevice_C42A50(void* session,int slot,int device);
+int  __thiscall CountActiveSessionSlots_C42B60(const void* session);
+bool __thiscall IsNativeLocalCoopActive_C43BB0(const void* session);
+bool __thiscall PreferredOwnerAllowsCurrentKeyboard_799B50(void* input);
 void __thiscall UiCommand4370_7B4370(void* ui,int command,int arg);
 void __thiscall UiCommand4480_7B4480(void* ui,int x,int y,int index);
 bool __thiscall UiRoute5620_7B5620(void* ui,int a,int b,int c);
@@ -37,6 +40,14 @@ inline int Status_C42D90(){return QueryGameStatus_C42D90(NativeSession_120());}
 inline void __thiscall SetSessionSlotMode_C42A30(void* session,int slot,int value){SessionSetSlotMode_C42A30(session,slot,value);}
 inline void __thiscall SetSessionSlotDevice_C42A50(void* session,int slot,int device){SessionSetDevice_C42A50(session,slot,device);}
 inline void __thiscall SessionSetSlotBinding_C42A50(void* session,int slot,int device){SessionSetDevice_C42A50(session,slot,device);}
+
+// C42B60/C43BB0/799B50 compatibility names. These three addresses are central
+// to native local J1/J2 ownership; exactly one external definition is allowed
+// for each VA. Historical descriptive names are inline adapters only.
+inline int __thiscall CountActivePlayers_C42B60(const void* session){return CountActiveSessionSlots_C42B60(session);}
+inline bool __thiscall SessionHasLocalCoop_C43BB0(const void* session){return IsNativeLocalCoopActive_C43BB0(session);}
+inline bool __thiscall IsNativeLocalSplitRoute_C43BB0(const void* session){return IsNativeLocalCoopActive_C43BB0(session);}
+inline bool __thiscall LocalSplitInputPrecheck_799B50(void* input){return PreferredOwnerAllowsCurrentKeyboard_799B50(input);}
 
 // 7B4370/7B4480 compatibility names used by geometry/front-end units.
 inline void InputBaseUpdate_7B4370(void* ui,int command,int arg){UiCommand4370_7B4370(ui,command,arg);}
