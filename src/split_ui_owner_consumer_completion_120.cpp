@@ -9,7 +9,8 @@ extern bool SessionHasLocalCoop_C43BB0(void*);
 extern int SessionDisplayStatus_C42D90(void*);
 extern bool UiEventBlocked_728C90(void*);
 extern void UiCommand4370_7B4370(void*,int,int);
-extern void UiCommand4480_7B4480(void*,const int*,int);
+// 0x7B4480: ECX=self, stack args x,y,index; ret 0x0C.
+extern void UiCommand4480_7B4480(void*,int,int,int);
 extern bool PreferredOwnerAllowsCurrentKeyboard_799B50(void*);
 extern std::uint8_t InputOwnerModeGate_799AF0(void*,int);
 extern bool InputCommand_799B90(std::uint8_t*,int,int);
@@ -26,8 +27,8 @@ void RouteLocalCoopUiCommand_A02DC0(void* selfRaw,int command,int arg){
     auto* self=static_cast<std::uint8_t*>(selfRaw);
     if(!SessionHasLocalCoop_C43BB0(Session())){UiCommand4370_7B4370(gUiInput_11B20C4,command,arg);return;}
     auto* keys=reinterpret_cast<const int*>(0x01129190); auto* vals=reinterpret_cast<const int*>(0x01129194);
-    for(int i=0;i<11;++i){if(command==keys[i*2]){const int mapped=vals[i*2];UiCommand4370_7B4370(gUiInput_11B20C4,mapped,arg);int route=(mapped==0xBC)?0x46:0;if(KeyboardPlayer()==1)route+=0x210;const int pair[2]={route,0};UiCommand4480_7B4480(gUiInput_11B20C4,pair,arg);return;}}
-    if(command==0x1B || command==0x1D){const int wanted=(command==0x1B)?0xB6:0xB7;auto* r=self+0x1F6;for(int i=0;i<2;++i,r+=0xA64){if(r[0]!=0){UiCommand4370_7B4370(gUiInput_11B20C4,wanted,arg);if(KeyboardPlayer()==1){const int pair[2]={0x203,0};UiCommand4480_7B4480(gUiInput_11B20C4,pair,arg);} return;}}}
+    for(int i=0;i<11;++i){if(command==keys[i*2]){const int mapped=vals[i*2];UiCommand4370_7B4370(gUiInput_11B20C4,mapped,arg);int route=(mapped==0xBC)?0x46:0;if(KeyboardPlayer()==1)route+=0x210;UiCommand4480_7B4480(gUiInput_11B20C4,route,0,arg);return;}}
+    if(command==0x1B || command==0x1D){const int wanted=(command==0x1B)?0xB6:0xB7;auto* r=self+0x1F6;for(int i=0;i<2;++i,r+=0xA64){if(r[0]!=0){UiCommand4370_7B4370(gUiInput_11B20C4,wanted,arg);if(KeyboardPlayer()==1)UiCommand4480_7B4480(gUiInput_11B20C4,0x203,0,arg);return;}}}
     UiCommand4370_7B4370(gUiInput_11B20C4,command,arg);
 }
 bool OwnerFilteredUiCommand_A02F20(int command,int player){return PreferredOwnerAllowsCurrentKeyboard_799B50(gInput_1249C40)&&InputCommand_799B90(gInput_1249C40,command,player);}
