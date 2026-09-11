@@ -6,9 +6,6 @@ struct Session120;
 extern std::uint8_t* gRoot_12340A4;
 extern std::uint8_t* gInput_1249C40;
 extern std::uint8_t* gPlayerRoot_11B2158;
-extern void __thiscall SessionSetSlotMode_C42A30(Session120*,int,int);
-extern void __thiscall SessionSetSlotBinding_C42A50(Session120*,int,int);
-extern void __thiscall SessionSetSlotAux_C42AB0(Session120*,int,int);
 extern bool IsDlcLocalSplitRow_C43320(const Session120*);
 using CriticalFn120=void(__stdcall*)(void*);
 
@@ -35,27 +32,27 @@ void PrepareDlcLocalPlayers_BF5888(int primarySlot){
  *reinterpret_cast<std::uint32_t*>(bytes+0x30)=0;
 
  for(int slot=0;slot<4;++slot){
-   SessionSetSlotBinding_C42A50(session,slot,-1);
+   SessionSetDevice_C42A50(session,slot,-1);
    *reinterpret_cast<std::uint32_t*>(bytes+0x478)|=(1u<<slot);
    const int mode=(bytes[0x56C]!=0&&primarySlot!=slot)?2:1;
    SessionSetSlotMode_C42A30(session,slot,mode);
-   SessionSetSlotAux_C42AB0(session,slot,0);
+   SetSessionAuxPair_C42AB0(session,slot,0);
    ResetProfileSlotFloat_BF5946(slot);
  }
 
  *reinterpret_cast<std::uint32_t*>(bytes+0x47C)|=(1u<<primarySlot);
  SessionSetSlotMode_C42A30(session,primarySlot,0);
  const int preferred=*reinterpret_cast<const int*>(gInput_1249C40+0x5D8);
- SessionSetSlotBinding_C42A50(session,primarySlot,preferred);
+ SessionSetDevice_C42A50(session,primarySlot,preferred);
 
  if(IsDlcLocalSplitRow_C43320(session)){
    const int first=*reinterpret_cast<const int*>(bytes+0x654);
    const int second=*reinterpret_cast<const int*>(bytes+0x658);
-   SessionSetSlotBinding_C42A50(session,primarySlot,first);
+   SessionSetDevice_C42A50(session,primarySlot,first);
    const int partner=primarySlot^1;
    *reinterpret_cast<std::uint32_t*>(bytes+0x47C)|=(1u<<partner);
    SessionSetSlotMode_C42A30(session,partner,0);
-   SessionSetSlotBinding_C42A50(session,partner,second);
+   SessionSetDevice_C42A50(session,partner,second);
  }
  *reinterpret_cast<std::uint32_t*>(bytes+0x18)=9;
  *reinterpret_cast<std::uint32_t*>(bytes+0x24)=2;
