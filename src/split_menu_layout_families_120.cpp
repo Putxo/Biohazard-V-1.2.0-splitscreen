@@ -1,8 +1,8 @@
 #include <cstdint>
 namespace re5::split120 {
 struct Split{unsigned char p[0x3070];float scale;float param;float scale2;float offset;float vertical;unsigned char full;unsigned char transient;};
-extern Split* gSplit_123457C; extern int Status_C42D90(); extern int Y_76A4A0(Split*,int);
-int MenuRowYStatus1_120(int fallback){return Status_C42D90()==1?Y_76A4A0(gSplit_123457C,int(gSplit_123457C->scale*144.f)):fallback;}
+extern Split* gSplit_123457C;
+int MenuRowYStatus1_120(int fallback){return Status_C42D90()==1?SplitVerticalTransform_76A4A0(gSplit_123457C,int(gSplit_123457C->scale*144.f)):fallback;}
 int MenuCenterScaled2_120(float logicalOffset,int fallback){return Status_C42D90()==1?0x280-int(gSplit_123457C->scale2*logicalOffset):fallback;}
 int MenuAffineCenterScaled2_120(int logicalX){return 0x280+int(float(logicalX-0x280)*gSplit_123457C->scale2);}
 float MenuScaleStatus1_120(float normal,float base){return Status_C42D90()==1?gSplit_123457C->scale*base:normal;}
